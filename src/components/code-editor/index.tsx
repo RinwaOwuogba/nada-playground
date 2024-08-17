@@ -1,15 +1,22 @@
-import constants from "@/constants";
+import CodeMirror from "@uiw/react-codemirror";
 
-const CodeEditor = ({}: ICodeEditorProps) => {
+const CodeEditor = ({ code, setCode, placeholder }: ICodeEditorProps) => {
+  const handleChange = (val: string) => setCode(val);
+
   return (
-    <div>
-      <input placeholder={constants.EDITOR_PLACEHOLDER_TEXT} />
-    </div>
+    <CodeMirror
+      value={code}
+      height="200px"
+      onChange={handleChange}
+      placeholder={placeholder}
+    />
   );
 };
 
 interface ICodeEditorProps {
   code: string;
   setCode: (code: string) => void;
+  placeholder: string;
 }
+
 export default CodeEditor;
