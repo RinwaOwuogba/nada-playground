@@ -1,8 +1,9 @@
 const { pathsToModuleNameMapper } = require("ts-jest");
 const { compilerOptions } = require("./tsconfig");
+import type { JestConfigWithTsJest } from "ts-jest";
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
-const jestConfig = {
+const jestConfig: JestConfigWithTsJest = {
   roots: ["./src"],
   preset: "ts-jest",
   testEnvironment: "jsdom",
