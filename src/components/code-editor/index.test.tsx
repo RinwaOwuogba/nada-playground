@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import CodeEditor from "./index";
+// import { tags as t } from "@lezer/highlight";
+// import createTheme from "@uiw/codemirror-themes";
 import constants from "@/constants";
+
+import CodeEditor from "./index";
 
 test("allows users type code", async () => {
   let code = "";
