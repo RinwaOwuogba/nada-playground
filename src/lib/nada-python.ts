@@ -1,41 +1,54 @@
-import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
-import { pythonLanguage } from "@codemirror/lang-python";
-import { styleTags, tags as t, Tag } from "@lezer/highlight";
-import { LanguageSupport, LRLanguage } from "@codemirror/language";
+import {
+  EditorState,
+  Range,
+  StateEffect,
+  StateField,
+  Transaction,
+} from "@codemirror/state";
+import { EditorView, DecorationSet } from "@codemirror/view";
+import { Decoration } from "@uiw/react-codemirror";
 
-// Define custom highlighting rules that blend with Python's default syntax
-const nadaHighlightStyle = HighlightStyle.define([
-  // Optional: Specific colors for Nada types and operators
-  // { tag: t.className, color: "#2b91af" }, // Matches Python's treatment of type names
-  // { tag: t.operator, color: "#a71d5d" }, // Matches Python's treatment of operators
-  // { tag: t.function(t.variableName), color: "#d14" }, // Matches Python's function styling
-]);
-
-export const secretIntegerTag = Tag.define();
-
-// Extend the existing Python parser to include Nada-specific types and operators
-const nadaParser = pythonLanguage.parser.configure({
-  props: [
-    styleTags({
-      // Map Nada-specific types and operations to existing Python syntax tags
-      // "SecretInteger PublicInteger Integer SecretUnsignedInteger PublicUnsignedInteger UnsignedInteger SecretBoolean PublicBoolean Boolean Party":
-      SecretInteger: t.definitionKeyword,
-      // SecretInteger: secretIntegerTag,
-      // // '"SecretInteger"': t.className,
-      // '"*" "**" "/"': t.operator,
-      // "+ - % < > <= >= ==": t.operator,
-      // // '"*" "**" "/" "+ - % < > <= >= == "': t.operator,
-      // reveal: t.operator, // Functions are treated as such
-      // // "trunc_pr if_else reveal public_equals": t.function(t.variableName), // Functions are treated as such
-    }),
-  ],
+const highlightPhrase = "CustomType";
+const highlightDecoration = Decoration.mark({
+  style: "background-color: yellow",
 });
 
-// Create a language extension for CodeMirror using the extended parser
-const nadaPython = () => {
-  return new LanguageSupport(LRLanguage.define({ parser: nadaParser }), [
-    // syntaxHighlighting(nadaHighlightStyle),
-  ]);
+highlightDecoration.range();
+
+const applyHighlights = (doc: any): Range<Decoration> => {
+  let x: any;
+
+  return x;
+  // let decorations = [];
+  // const cursor = doc.iterRange(0, doc.length, (from, to, text) => {
+  //   let pos = text.indexOf(highlightPhrase);
+  //   while (pos !== -1) {
+  //     decorations.push(
+  //       highlightDecoration.range(
+  //         from + pos,
+  //         from + pos + highlightPhrase.length
+  //       )
+  //     );
+  //     pos = text.indexOf(highlightPhrase, pos + highlightPhrase.length);
+  //   }
+  // });
+  // return decorations;
 };
 
-export default nadaPython;
+export const AltHighlightExtension = StateField.define({
+  create(state) {
+    state.update;
+
+    return Decoration.set(applyHighlights(state.doc));
+  },
+  update(value, transaction) {
+    const newValue = value.map(transaction.changes);
+    // console.log("decorations", decorations);
+    console.log("transactions", transaction.changes);
+    if (transaction.docChanged) {
+      return Decoration.set(applyHighlights(transaction.newDoc));
+    }
+    return newValue;
+  },
+  provide: (f) => EditorView.decorations.from(f),
+});

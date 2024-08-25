@@ -1,0 +1,23 @@
+/* Operators */
+.cc-nada-operator {
+  color: #ff5733;
+}
+
+/* Data Types */
+.cc-nada-SecretInteger,
+.cc-nada-PublicInteger,
+.cc-nada-Integer,
+.cc-nada-SecretUnsignedInteger,
+.cc-nada-PublicUnsignedInteger,
+.cc-nada-UnsignedInteger,
+.cc-nada-SecretBoolean,
+.cc-nada-PublicBoolean,
+.cc-nada-Boolean,
+.cc-nada-Party {
+  color: #3498db;
+}
+
+/* Functions */
+.cc-nada-function {
+  color: #9b59b6;
+}

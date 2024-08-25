@@ -1,24 +1,23 @@
-import CodeMirror, {
-  defaultLightThemeOption,
-  Extension,
-} from "@uiw/react-codemirror";
+import nadaHighlightExtension from "@/lib/nada-highlight-extension";
+import CodeMirror, { Extension } from "@uiw/react-codemirror";
+import { useMemo } from "react";
 // import { useMemo } from "react";
-import nadaPython from "@/lib/nada-python";
-// import { python } from "@codemirror/lang-python";
+// import nadaPython from "@/lib/nada-python";
+// import customExtension from "@/lib/nada-python";
+import { python } from "@codemirror/lang-python";
 
 const CodeEditor = ({
   code,
   setCode,
   placeholder,
-  theme: customTheme,
+  extensions = [nadaHighlightExtension()],
 }: ICodeEditorProps) => {
   const handleChange = (val: string) => setCode(val);
 
-  const theme = customTheme ? customTheme : defaultLightThemeOption;
-
-  // const extensions = useMemo(() => [], [python]);
-
-  // const extensions = useMemo(() => [nadaPython()], [nadaPython]);
+  const completeExtensions = useMemo(
+    () => [python(), ...extensions],
+    [extensions]
+  );
 
   return (
     <CodeMirror
@@ -26,9 +25,7 @@ const CodeEditor = ({
       height="300px"
       onChange={handleChange}
       placeholder={placeholder}
-      theme={theme}
-      extensions={[nadaPython()]}
-      // extensions={extensions}
+      extensions={completeExtensions}
     />
   );
 };
@@ -37,7 +34,7 @@ interface ICodeEditorProps {
   code: string;
   setCode: (code: string) => void;
   placeholder: string;
-  theme?: Extension;
+  extensions?: Extension[];
 }
 
 export default CodeEditor;

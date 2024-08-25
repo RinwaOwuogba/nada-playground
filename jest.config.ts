@@ -1,6 +1,5 @@
-const { pathsToModuleNameMapper } = require("ts-jest");
 const { compilerOptions } = require("./tsconfig");
-import type { JestConfigWithTsJest } from "ts-jest";
+import { pathsToModuleNameMapper, type JestConfigWithTsJest } from "ts-jest";
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const jestConfig: JestConfigWithTsJest = {
