@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import CodeEditor from "./components/code-editor";
 import constants from "./constants";
-import executeNadaCode, { evaluatePython } from "./lib/nada-executor";
 
 const sampleCode = `\
  from nada_dsl import *
@@ -39,11 +38,6 @@ function App() {
   // const setCode = (newCode: string) => {
   //   code = newCode;
   // };
-
-  useEffect(() => {
-    evaluatePython({}, "").then(console.log).then(console.log);
-    // executeNadaCode("").then(console.log).then(console.log);
-  }, []);
 
   return (
     <>
