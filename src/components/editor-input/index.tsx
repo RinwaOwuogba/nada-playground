@@ -1,14 +1,6 @@
 import { INadaInput } from "../../hooks/useNadaInput";
 import { Input } from "@chakra-ui/react";
 
-interface IEditorInputProps {
-  code: string;
-  inputs: INadaInput[];
-  isProgramExecuting: boolean;
-  executeProgram: (inputs: INadaInput[], code: string) => void;
-  setInputValue: (id: string, value: string) => void;
-}
-
 const EditorInput = ({
   code,
   inputs,
@@ -50,5 +42,13 @@ const EditorInput = ({
     </div>
   );
 };
+
+interface IEditorInputProps {
+  code: string;
+  inputs: INadaInput[];
+  isProgramExecuting: boolean;
+  executeProgram: (inputs: INadaInput[], code: string) => void;
+  setInputValue: (id: string, value: string) => void;
+}
 
 export default EditorInput;

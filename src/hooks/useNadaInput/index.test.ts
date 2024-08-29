@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import { useNadaInput } from "./index";
 
 describe("useNadaInput", () => {
-  it("extracts inputs correctly with random ids", () => {
+  it("extracts inputs correctly", () => {
     const code = `
       from nada_dsl import *
       
@@ -158,5 +158,55 @@ describe("useNadaInput", () => {
     expect(result.current.inputs[0].value).toBe("42");
     expect(result.current.inputs[1].name).toBe("num_2");
     expect(result.current.inputs[1].value).toBe("");
+  });
+
+  it("should not create duplicate inputs for the same name", () => {
+    const code = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = SecretInteger(Input(name="num_1"))
+          num_1_duplicate = SecretInteger(Input(name="num_1"))
+          return [num_1, num_1_duplicate]
+    `;
+
+    const { result } = renderHook(() => useNadaInput(code));
+
+    expect(result.current.inputs).toHaveLength(1);
+    expect(result.current.inputs[0].name).toBe("num_1");
+    expect(result.current.inputs[0].type).toBe("SecretInteger");
+  });
+
+  it("should update input type when it changes in the code", () => {
+    const initialCode = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = SecretInteger(Input(name="num_1"))
+          return [num_1]
+    `;
+
+    const { result, rerender } = renderHook(({ code }) => useNadaInput(code), {
+      initialProps: { code: initialCode },
+    });
+
+    expect(result.current.inputs).toHaveLength(1);
+    expect(result.current.inputs[0].name).toBe("num_1");
+    expect(result.current.inputs[0].type).toBe("SecretInteger");
+
+    // Change the type of num_1
+    const updatedCode = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = PublicInteger(Input(name="num_1"))
+          return [num_1]
+    `;
+
+    rerender({ code: updatedCode });
+
+    expect(result.current.inputs).toHaveLength(1);
+    expect(result.current.inputs[0].name).toBe("num_1");
+    expect(result.current.inputs[0].type).toBe("PublicInteger");
   });
 });
