@@ -23,8 +23,8 @@ const ExecutionOutput = ({
   );
 };
 
-interface IExecutionResult {
-  type: string;
+export interface IExecutionResult {
+  name: string;
   value: string;
 }
 

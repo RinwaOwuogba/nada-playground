@@ -1,45 +1,48 @@
 import { loadPyodide, PyodideInterface } from "pyodide";
 import init, { run } from "./nada-run.js";
+import { INadaInput } from "@/hooks/useNadaInput/index.js";
+import { IExecutionResult } from "@/components/execution-output/index.js";
 
 let pyodide: PyodideInterface;
 let pyodideReadyPromise: Promise<PyodideInterface>;
 
 export const executeNadaCode = async (
-  inputs: Input,
+  inputs: INadaInput[],
   code: string
-): Promise<string> => {
-  const inputEntries = Object.entries(inputs);
-
+): Promise<IExecutionResult[]> => {
   await loadPythonEnvironment();
 
   const publicInputs: { [key: string]: PublicInput } = {};
   const secretInputs: { [key: string]: SecretInput } = {};
 
-  for (let [inputName, [inputValue, inputType]] of inputEntries) {
+  inputs.forEach((input) => {
     // Validate Input
     // Check if inputName is a single word
-    if (/\s/.test(inputName)) {
+    if (/\s/.test(input.name)) {
       throw new Error("Input name must be a single word.");
     }
 
-    if (!isNaN(inputValue)) {
-      inputValue = parseFloat(inputValue as unknown as string);
-    } else {
+    if (input.value === undefined) {
+      throw new Error("Input value is required.");
+    }
+
+    const numericValue = parseFloat(input.value);
+    if (isNaN(numericValue)) {
       throw new Error("Input value must be a number.");
     }
 
-    if (inputType === "PublicInteger") {
-      publicInputs[inputName] = {
+    if (input.type === "PublicInteger") {
+      publicInputs[input.name] = {
         type: "PublicInteger",
-        value: `${inputValue}`,
+        value: numericValue.toString(),
       };
-    } else if (inputType === "SecretInteger") {
-      secretInputs[inputName] = {
+    } else if (input.type === "SecretInteger") {
+      secretInputs[input.name] = {
         type: "SecretInteger",
-        value: `${inputValue}`,
+        value: numericValue.toString(),
       };
     }
-  }
+  });
 
   const public_vars = JSON.stringify(publicInputs);
   const secrets = JSON.stringify(secretInputs);
@@ -56,8 +59,13 @@ export const executeNadaCode = async (
     public_vars
   );
 
-  // Return the result
-  return `RESULT: ${JSON.stringify(Array.from(program_output.entries()))}`;
+  return Array.from(program_output.entries()).map((entry: unknown) => {
+    const [name, value] = entry as [string, unknown];
+    return {
+      name,
+      value: value?.toString() ?? "",
+    };
+  });
 };
 
 export const loadPythonEnvironment = async () => {
@@ -87,12 +95,6 @@ const runProgramSimulator = async (
 
   return result;
 };
-
-type InputType = "PublicInteger" | "SecretInteger";
-
-interface Input {
-  [key: string]: [number, InputType];
-}
 
 interface PublicInput {
   type: "PublicInteger";

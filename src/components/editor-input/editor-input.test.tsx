@@ -1,6 +1,7 @@
 import { render, screen, within, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import EditorInput from "./index";
+import { INadaInput } from "../../hooks/useNadaInput";
 
 const inputTypes = [
   "SecretInteger",
@@ -13,45 +14,34 @@ const inputTypes = [
   "PublicBoolean",
 ];
 
-const generateTestCode = (inputType: string, variableName: string) => `
-from nada_audit import *
-
-def nada_main():
-  party1 = Party(name="Party1")
-  ${variableName} = ${inputType}(Input("${variableName}", party1))
-  return [Output(${variableName}, "my_output", party1)]
-`;
-
 describe("EditorInput", () => {
+  const mockExecuteProgram = jest.fn();
   const defaultProps = {
-    code: generateTestCode("SecretInteger", "test_variable"),
+    inputs: [{ name: "test_variable", type: "SecretInteger" }],
     isProgramExecuting: false,
-    executeProgram: () => {},
+    executeProgram: mockExecuteProgram,
   };
 
-  test.each(inputTypes)("shows input name and type for %s", (inputType) => {
-    const variableName = `test_${inputType.toLowerCase()}`;
-    const code = generateTestCode(inputType, variableName);
-
-    render(<EditorInput {...defaultProps} code={code} />);
-
+  test("renders input table correctly", () => {
+    render(<EditorInput {...defaultProps} />);
     const inputRows = screen.getAllByRole("row").slice(1); // account for header row
     expect(inputRows.length).toBe(1);
 
     const row = inputRows[0];
-    const nameCell = within(row).getByText(variableName);
-    const typeCell = within(row).getByText(inputType);
+    const nameCell = within(row).getByText("test_variable");
+    const typeCell = within(row).getByText("SecretInteger");
 
     expect(nameCell).toBeInTheDocument();
     expect(typeCell).toBeInTheDocument();
   });
 
   test("handles multiple inputs", () => {
-    const code = inputTypes
-      .map((type, index) => generateTestCode(type, `var${index + 1}`))
-      .join("\n");
+    const multipleInputs: INadaInput[] = inputTypes.map((type, index) => ({
+      name: `var${index + 1}`,
+      type,
+    }));
 
-    render(<EditorInput {...defaultProps} code={code} />);
+    render(<EditorInput {...defaultProps} inputs={multipleInputs} />);
 
     const inputRows = screen.getAllByRole("row").slice(1); // account for header row
     expect(inputRows.length).toBe(inputTypes.length);
@@ -69,7 +59,8 @@ describe("EditorInput", () => {
   describe("Run button", () => {
     const mockExecuteProgram = jest.fn();
     const defaultProps = {
-      code: generateTestCode("SecretInteger", "test_variable"),
+      code: "",
+      inputs: [],
       isProgramExecuting: false,
       executeProgram: mockExecuteProgram,
     };
