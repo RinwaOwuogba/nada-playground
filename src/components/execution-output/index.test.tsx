@@ -32,8 +32,8 @@ describe("ExecutionOutput", () => {
 
   test("displays execution result when execution is completed", () => {
     const executionResult = [
-      { type: "output", value: "Result 1" },
-      { type: "output", value: "Result 2" },
+      { name: "output_1", value: "SecretInteger(NadaInt(1))" },
+      { name: "output_2", value: "SecretInteger(NadaInt(2))" },
     ];
     render(
       <ExecutionOutput
@@ -43,8 +43,8 @@ describe("ExecutionOutput", () => {
       />
     );
 
-    expect(screen.getByText("Result 1")).toBeInTheDocument();
-    expect(screen.getByText("Result 2")).toBeInTheDocument();
+    expect(screen.getByText("SecretInteger(NadaInt(1))")).toBeInTheDocument();
+    expect(screen.getByText("SecretInteger(NadaInt(2))")).toBeInTheDocument();
     expect(
       screen.queryByText("No execution results yet.")
     ).not.toBeInTheDocument();
