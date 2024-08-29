@@ -1,11 +1,11 @@
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { useNadaInput } from "./index";
 
 describe("useNadaInput", () => {
-  it("should extract inputs correctly", () => {
-    const testCode = `
+  it("extracts inputs correctly with random ids", () => {
+    const code = `
       from nada_dsl import *
-
+      
       def nada_main():
           num_1 = SecretInteger(Input(name="num_1"))
           num_2 = PublicInteger(Input(name="num_2"))
@@ -13,9 +13,13 @@ describe("useNadaInput", () => {
           return [num_1, num_2, bool_1]
     `;
 
-    const { result } = renderHook(() => useNadaInput(testCode));
+    const { result } = renderHook(() => useNadaInput(code));
 
-    expect(result.current).toEqual([
+    expect(result.current.inputs).toHaveLength(3);
+
+    expect(
+      result.current.inputs.map(({ name, type }) => ({ name, type }))
+    ).toEqual([
       { name: "num_1", type: "SecretInteger" },
       { name: "num_2", type: "PublicInteger" },
       { name: "bool_1", type: "SecretBoolean" },
@@ -25,7 +29,7 @@ describe("useNadaInput", () => {
   it("should handle empty code", () => {
     const { result } = renderHook(() => useNadaInput(""));
 
-    expect(result.current).toEqual([]);
+    expect(result.current.inputs).toEqual([]);
   });
 
   it("should handle code without inputs", () => {
@@ -38,7 +42,45 @@ describe("useNadaInput", () => {
 
     const { result } = renderHook(() => useNadaInput(testCode));
 
-    expect(result.current).toEqual([]);
+    expect(result.current.inputs).toEqual([]);
+  });
+
+  it("ignores non-Input declarations", () => {
+    const code = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = SecretInteger(5)
+          num_2 = PublicInteger(Input(name="num_2"))
+          return [num_1, num_2]
+    `;
+
+    const { result } = renderHook(() => useNadaInput(code));
+
+    expect(result.current.inputs).toHaveLength(1);
+    expect(result.current.inputs[0].name).toBe("num_2");
+    expect(result.current.inputs[0].type).toBe("PublicInteger");
+  });
+
+  it("exposes a function to set the value of an input", () => {
+    const code = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = SecretInteger(Input(name="num_1"))
+          return [num_1]
+    `;
+
+    const { result } = renderHook(() => useNadaInput(code));
+
+    expect(result.current.inputs).toHaveLength(1);
+    const inputName = result.current.inputs[0].name;
+
+    act(() => {
+      result.current.setInputValue(inputName, "42");
+    });
+
+    expect(result.current.inputs[0].value).toBe("42");
   });
 
   it("should handle all supported input types", () => {
@@ -68,11 +110,53 @@ describe("useNadaInput", () => {
 
     const { result } = renderHook(() => useNadaInput(code));
 
-    expect(result.current).toEqual(
+    expect(
+      result.current.inputs.map(({ name, type }) => ({ name, type }))
+    ).toEqual(
       inputTypes.map((type, index) => ({
         name: `var${index + 1}`,
         type: type,
       }))
     );
+  });
+
+  it("preserves input values when new inputs are added", () => {
+    const initialCode = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = SecretInteger(Input(name="num_1"))
+          return [num_1]
+    `;
+
+    const { result, rerender } = renderHook(({ code }) => useNadaInput(code), {
+      initialProps: { code: initialCode },
+    });
+
+    // Set initial value
+    act(() => {
+      result.current.setInputValue(result.current.inputs[0].name, "42");
+    });
+
+    expect(result.current.inputs[0].value).toBe("42");
+
+    // Add a new input
+    const updatedCode = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = SecretInteger(Input(name="num_1"))
+          num_2 = PublicInteger(Input(name="num_2"))
+          return [num_1, num_2]
+    `;
+
+    rerender({ code: updatedCode });
+
+    // Check that the original input value is preserved and the new input is added
+    expect(result.current.inputs).toHaveLength(2);
+    expect(result.current.inputs[0].name).toBe("num_1");
+    expect(result.current.inputs[0].value).toBe("42");
+    expect(result.current.inputs[1].name).toBe("num_2");
+    expect(result.current.inputs[1].value).toBe("");
   });
 });
