@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import EditorInput from "./index";
 
@@ -23,11 +23,17 @@ def nada_main():
 `;
 
 describe("EditorInput", () => {
+  const defaultProps = {
+    code: generateTestCode("SecretInteger", "test_variable"),
+    isProgramExecuting: false,
+    executeProgram: () => {},
+  };
+
   test.each(inputTypes)("shows input name and type for %s", (inputType) => {
     const variableName = `test_${inputType.toLowerCase()}`;
     const code = generateTestCode(inputType, variableName);
 
-    render(<EditorInput code={code} />);
+    render(<EditorInput {...defaultProps} code={code} />);
 
     const inputRows = screen.getAllByRole("row").slice(1); // account for header row
     expect(inputRows.length).toBe(1);
@@ -45,7 +51,7 @@ describe("EditorInput", () => {
       .map((type, index) => generateTestCode(type, `var${index + 1}`))
       .join("\n");
 
-    render(<EditorInput code={code} />);
+    render(<EditorInput {...defaultProps} code={code} />);
 
     const inputRows = screen.getAllByRole("row").slice(1); // account for header row
     expect(inputRows.length).toBe(inputTypes.length);
@@ -57,6 +63,34 @@ describe("EditorInput", () => {
 
       expect(nameCell).toBeInTheDocument();
       expect(typeCell).toBeInTheDocument();
+    });
+  });
+
+  describe("Run button", () => {
+    const mockExecuteProgram = jest.fn();
+    const defaultProps = {
+      code: generateTestCode("SecretInteger", "test_variable"),
+      isProgramExecuting: false,
+      executeProgram: mockExecuteProgram,
+    };
+
+    test("should be enabled when isProgramExecuting is false", () => {
+      render(<EditorInput {...defaultProps} />);
+      const runButton = screen.getByRole("button", { name: /run/i });
+      expect(runButton).toBeEnabled();
+    });
+
+    test("should be disabled when isProgramExecuting is true", () => {
+      render(<EditorInput {...defaultProps} isProgramExecuting={true} />);
+      const runButton = screen.getByRole("button", { name: /run/i });
+      expect(runButton).toBeDisabled();
+    });
+
+    test("should trigger executeProgram function when clicked", () => {
+      render(<EditorInput {...defaultProps} />);
+      const runButton = screen.getByRole("button", { name: /run/i });
+      fireEvent.click(runButton);
+      expect(mockExecuteProgram).toHaveBeenCalledTimes(1);
     });
   });
 });
