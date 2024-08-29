@@ -30,8 +30,8 @@ const EditorInput = ({ code }: IEditorInputProps) => {
         <Thead>
           <Tr>
             <Th>Input Name</Th>
-            <Th>Input Type</Th>
-            <Th>Input Value</Th>
+            <Th>Data Type</Th>
+            <Th>Value</Th>
           </Tr>
         </Thead>
         <Tbody>
