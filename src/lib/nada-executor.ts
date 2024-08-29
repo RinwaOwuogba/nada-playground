@@ -77,7 +77,11 @@ export const loadPythonEnvironment = async () => {
 
     await pyodide.loadPackage("micropip");
     const micropip = pyodide.pyimport("micropip");
-    await micropip.install("nada_dsl-0.5.0-py3-none-any.whl");
+
+    // Using older version of Nada compiler due to incompatibility
+    // between nada_dsl 0.5.0 and current nada-run.js
+    await micropip.install("nada_dsl-0.1.0-py3-none-any.whl");
+    // await micropip.install("nada_dsl-0.5.0-py3-none-any.whl");
   }
 };
 

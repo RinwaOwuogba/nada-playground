@@ -8,7 +8,7 @@ import ExecutionOutput, {
 } from "./components/execution-output";
 import constants from "./constants";
 import executeNadaCode from "./lib/nada-executor";
-import { useNadaInput } from "./hooks/useNadaInput";
+import { INadaInput, useNadaInput } from "./hooks/useNadaInput";
 
 const sampleCode = `\
 from nada_dsl import *
@@ -31,35 +31,42 @@ function App() {
   );
   const toast = useToast();
 
-  const inputs = useNadaInput(code);
+  const { inputs, setInputValue } = useNadaInput(code);
+  console.log(inputs);
 
-  const executeProgram = useCallback(async () => {
-    setIsProgramExecuting(true);
-    try {
-      const result = await executeNadaCode(inputs, code);
-      setExecutionResult(result);
-    } catch (error: unknown) {
-      const err = error as Error;
-      toast({
-        title: "Error",
-        description: err.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-    } finally {
-      setIsProgramExecuting(false);
-    }
-  }, [code]);
+  const executeProgram = useCallback(
+    async (inputs: INadaInput[], code: string) => {
+      setIsProgramExecuting(true);
+      try {
+        const result = await executeNadaCode(inputs, code);
+        setExecutionResult(result);
+      } catch (error: unknown) {
+        const err = error as Error;
+        toast({
+          title: "Error",
+          description: err.message,
+          status: "error",
+          duration: 6000,
+          isClosable: true,
+          variant: "subtle",
+        });
+      } finally {
+        setIsProgramExecuting(false);
+      }
+    },
+    [setIsProgramExecuting, setIsProgramExecuting, toast]
+  );
 
   return (
     <div className="App">
       <h1>Nada Playground</h1>
 
       <EditorInput
+        code={code}
         inputs={inputs}
         isProgramExecuting={isProgramExecuting}
         executeProgram={executeProgram}
+        setInputValue={setInputValue}
       />
 
       <CodeEditor

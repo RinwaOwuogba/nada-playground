@@ -17,12 +17,14 @@ const inputTypes = [
 describe("EditorInput", () => {
   const mockExecuteProgram = jest.fn();
   const defaultProps = {
-    inputs: [{ name: "test_variable", type: "SecretInteger" }],
+    code: "",
+    inputs: [{ name: "test_variable", type: "SecretInteger", value: "10" }],
     isProgramExecuting: false,
+    setInputValue: jest.fn(),
     executeProgram: mockExecuteProgram,
   };
 
-  test("renders input table correctly", () => {
+  test("renders input table correctly with value", () => {
     render(<EditorInput {...defaultProps} />);
     const inputRows = screen.getAllByRole("row").slice(1); // account for header row
     expect(inputRows.length).toBe(1);
@@ -30,15 +32,18 @@ describe("EditorInput", () => {
     const row = inputRows[0];
     const nameCell = within(row).getByText("test_variable");
     const typeCell = within(row).getByText("SecretInteger");
+    const valueInput = within(row).getByRole("textbox");
 
     expect(nameCell).toBeInTheDocument();
     expect(typeCell).toBeInTheDocument();
+    expect(valueInput).toHaveValue("10");
   });
 
-  test("handles multiple inputs", () => {
+  test("handles multiple inputs with values", () => {
     const multipleInputs: INadaInput[] = inputTypes.map((type, index) => ({
       name: `var${index + 1}`,
       type,
+      value: `${index + 1}`,
     }));
 
     render(<EditorInput {...defaultProps} inputs={multipleInputs} />);
@@ -50,9 +55,11 @@ describe("EditorInput", () => {
       const row = inputRows[index];
       const nameCell = within(row).getByText(`var${index + 1}`);
       const typeCell = within(row).getByText(type);
+      const valueInput = within(row).getByRole("textbox");
 
       expect(nameCell).toBeInTheDocument();
       expect(typeCell).toBeInTheDocument();
+      expect(valueInput).toHaveValue(`${index + 1}`);
     });
   });
 
@@ -62,6 +69,7 @@ describe("EditorInput", () => {
       code: "",
       inputs: [],
       isProgramExecuting: false,
+      setInputValue: jest.fn(),
       executeProgram: mockExecuteProgram,
     };
 

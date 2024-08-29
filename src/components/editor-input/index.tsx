@@ -1,15 +1,16 @@
-import React from "react";
 import { INadaInput } from "../../hooks/useNadaInput";
 import { Input } from "@chakra-ui/react";
 
 interface IEditorInputProps {
+  code: string;
   inputs: INadaInput[];
   isProgramExecuting: boolean;
-  executeProgram: () => void;
+  executeProgram: (inputs: INadaInput[], code: string) => void;
   setInputValue: (id: string, value: string) => void;
 }
 
 const EditorInput = ({
+  code,
   inputs,
   isProgramExecuting,
   executeProgram,
@@ -40,7 +41,10 @@ const EditorInput = ({
           ))}
         </tbody>
       </table>
-      <button onClick={executeProgram} disabled={isProgramExecuting}>
+      <button
+        onClick={() => executeProgram(inputs, code)}
+        disabled={isProgramExecuting}
+      >
         Run
       </button>
     </div>
