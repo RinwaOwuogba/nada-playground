@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useToast } from "@chakra-ui/react";
+import { Text, useToast } from "@chakra-ui/react";
 import "./App.css";
 import CodeEditor from "./components/code-editor";
 import EditorInput from "./components/editor-input";
@@ -32,7 +32,6 @@ function App() {
   const toast = useToast();
 
   const { inputs, setInputValue } = useNadaInput(code);
-  console.log(inputs);
 
   const executeProgram = useCallback(
     async (inputs: INadaInput[], code: string) => {
@@ -59,7 +58,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Nada Playground</h1>
+      <Text>Nada Playground</Text>
 
       <EditorInput
         code={code}

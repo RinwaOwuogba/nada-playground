@@ -17,7 +17,9 @@ const ExecutionOutput = ({
   return (
     <Box>
       {executionResult.map((result, index) => (
-        <div key={index}>{result.value}</div>
+        <div key={index}>
+          {result.name}: {result.value}
+        </div>
       ))}
     </Box>
   );

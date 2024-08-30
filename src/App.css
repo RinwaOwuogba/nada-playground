@@ -21,3 +21,7 @@
 .cc-nada-function {
   color: #9b59b6;
 }
+
+.cm-line {
+  font-family: "Fira Code Variable", monospace !important;
+}
