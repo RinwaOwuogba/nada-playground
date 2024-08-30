@@ -1,3 +1,4 @@
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Button } from "@chakra-ui/react";
 import { INadaInput } from "../../hooks/useNadaInput";
 import { Input } from "@chakra-ui/react";
 
@@ -9,37 +10,42 @@ const EditorInput = ({
   setInputValue,
 }: IEditorInputProps) => {
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Input Name</th>
-            <th>Data Type</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
+    <Box>
+      <Table colorScheme="blue" size="sm" marginBottom={4}>
+        <Thead>
+          <Tr>
+            <Th>Input Name</Th>
+            <Th>Data Type</Th>
+            <Th>Value</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {inputs.map((input) => (
-            <tr key={input.name}>
-              <td>{input.name}</td>
-              <td>{input.type}</td>
-              <td>
+            <Tr key={input.name}>
+              <Td>{input.name}</Td>
+              <Td>{input.type}</Td>
+              <Td>
                 <Input
                   value={input.value}
                   onChange={(e) => setInputValue(input.name, e.target.value)}
+                  size="sm"
                 />
-              </td>
-            </tr>
+              </Td>
+            </Tr>
           ))}
-        </tbody>
-      </table>
-      <button
+        </Tbody>
+      </Table>
+
+      <Button
+        size={"lg"}
+        colorScheme="blue"
+        isLoading={isProgramExecuting}
         onClick={() => executeProgram(inputs, code)}
         disabled={isProgramExecuting}
       >
         Run
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 };
 

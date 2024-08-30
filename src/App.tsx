@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Text, useToast } from "@chakra-ui/react";
+import { Box, Text, Grid, GridItem, useToast } from "@chakra-ui/react";
 import "./App.css";
 import CodeEditor from "./components/code-editor";
 import EditorInput from "./components/editor-input";
@@ -14,13 +14,13 @@ const sampleCode = `\
 from nada_dsl import *
 
 def nada_main():
-    num_1 = SecretInteger(Input(name="num_1"))
-    num_2 = PublicInteger(Input(name="num_2"))
-    truncated = num_1.trunc_pr(num_2)
-    result = truncated.if_else(num_1, num_2)
-    revealed = result.reveal()
-    equality_check = num_1.public_equals(num_2)
-    return [result, revealed, equality_check]
+    party_alice = Party(name="Alice")
+    party_bob = Party(name="Bob")
+    party_charlie = Party(name="Charlie")
+    num_1 = SecretInteger(Input(name="num_1", party=party_alice))
+    num_2 = SecretInteger(Input(name="num_2", party=party_bob))
+    product = num_1 * num_2
+    return [Output(product, "product", party_charlie)]
 `;
 
 function App() {
@@ -57,30 +57,52 @@ function App() {
   );
 
   return (
-    <div className="App">
-      <Text>Nada Playground</Text>
+    <Box height="100vh" display="flex" flexDirection="column">
+      <Box bg="blue.500" padding={5}>
+        <Text color={"white"} fontSize={"xxx-large"} fontWeight={"bold"}>
+          Nada Playground
+        </Text>
+      </Box>
 
-      <EditorInput
-        code={code}
-        inputs={inputs}
-        isProgramExecuting={isProgramExecuting}
-        executeProgram={executeProgram}
-        setInputValue={setInputValue}
-      />
+      <Grid
+        padding={5}
+        templateAreas={`
+          "editor output"
+          "input ."
+        `}
+        overflowX={"hidden"}
+        gridTemplateColumns="1fr 1fr"
+        columnGap={4}
+        rowGap={10}
+      >
+        <GridItem area="editor" overflowX={"scroll"}>
+          <CodeEditor
+            code={code}
+            setCode={setCode}
+            placeholder={constants.EDITOR_PLACEHOLDER_TEXT}
+          />
+        </GridItem>
 
-      <CodeEditor
-        code={code}
-        setCode={setCode}
-        placeholder={constants.EDITOR_PLACEHOLDER_TEXT}
-      />
+        <GridItem area="output">
+          <ExecutionOutput
+            isProgramExecuting={isProgramExecuting}
+            executionResult={executionResult}
+            loadingMessage="Executing program..."
+            defaultMessage="No execution results yet."
+          />
+        </GridItem>
 
-      <ExecutionOutput
-        isProgramExecuting={isProgramExecuting}
-        executionResult={executionResult}
-        loadingMessage="Executing program..."
-        defaultMessage="No execution results yet."
-      />
-    </div>
+        <GridItem area="input">
+          <EditorInput
+            code={code}
+            inputs={inputs}
+            isProgramExecuting={isProgramExecuting}
+            executeProgram={executeProgram}
+            setInputValue={setInputValue}
+          />
+        </GridItem>
+      </Grid>
+    </Box>
   );
 }
 

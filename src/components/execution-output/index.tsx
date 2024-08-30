@@ -6,21 +6,39 @@ const ExecutionOutput = ({
   loadingMessage,
   defaultMessage,
 }: IExecutionOutputProps) => {
-  if (isProgramExecuting) {
-    return <Box>{loadingMessage}</Box>;
-  }
+  const renderContent = () => {
+    if (isProgramExecuting) {
+      return <>{loadingMessage}</>;
+    }
 
-  if (executionResult.length === 0) {
-    return <Box>{defaultMessage}</Box>;
-  }
+    if (executionResult.length === 0) {
+      return <>{defaultMessage}</>;
+    }
+
+    return (
+      <>
+        {executionResult.map((result, index) => (
+          <div key={index}>
+            {result.name}: {result.value}
+          </div>
+        ))}
+      </>
+    );
+  };
 
   return (
-    <Box>
-      {executionResult.map((result, index) => (
-        <div key={index}>
-          {result.name}: {result.value}
-        </div>
-      ))}
+    <Box
+      border={"1px solid"}
+      borderColor={"gray.200"}
+      color={"gray.500"}
+      fontWeight={"600"}
+      backgroundColor={"gray.100"}
+      h="100%"
+      padding={2}
+      borderRadius={2}
+      className="code"
+    >
+      {renderContent()}
     </Box>
   );
 };

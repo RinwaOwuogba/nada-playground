@@ -13,6 +13,7 @@
 .cc-nada-SecretBoolean,
 .cc-nada-PublicBoolean,
 .cc-nada-Boolean,
+.cc-nada-Output,
 .cc-nada-Party {
   color: #3498db;
 }
@@ -22,6 +23,8 @@
   color: #9b59b6;
 }
 
+.code,
 .cm-line {
   font-family: "Fira Code Variable", monospace !important;
+  font-size: 14px;
 }
