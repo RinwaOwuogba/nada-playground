@@ -69,7 +69,7 @@ export const executeNadaCode = async (
 };
 
 export const loadPythonEnvironment = async () => {
-  if (!pyodide) {
+  if (!pyodideReadyPromise) {
     pyodideReadyPromise = loadPyodide({
       indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full",
     });
@@ -83,6 +83,8 @@ export const loadPythonEnvironment = async () => {
     await micropip.install("nada_dsl-0.1.0-py3-none-any.whl");
     // await micropip.install("nada_dsl-0.5.0-py3-none-any.whl");
   }
+
+  return await pyodideReadyPromise;
 };
 
 const runProgramSimulator = async (
@@ -92,9 +94,9 @@ const runProgramSimulator = async (
 ) => {
   // Instantiate our wasm module
   await init();
-  console.log(
-    `Running program simulator with arguments: ${program}, ${secrets}, ${public_vars}`
-  );
+  // console.log(
+  //   `Running program simulator with arguments: ${program}, ${secrets}, ${public_vars}`
+  // );
   const result = run(program, 5, 1, 128, secrets, public_vars);
 
   return result;

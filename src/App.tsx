@@ -9,6 +9,7 @@ import ExecutionOutput, {
 import constants from "./constants";
 import executeNadaCode from "./lib/nada-executor";
 import { INadaInput, useNadaInput } from "./hooks/useNadaInput";
+import EnvironmentLoader from "./components/environment-loader";
 
 const sampleCode = `\
 from nada_dsl import *
@@ -64,44 +65,46 @@ function App() {
         </Text>
       </Box>
 
-      <Grid
-        padding={5}
-        templateAreas={`
+      <EnvironmentLoader>
+        <Grid
+          padding={5}
+          templateAreas={`
           "editor output"
           "input ."
         `}
-        overflowX={"hidden"}
-        gridTemplateColumns="1fr 1fr"
-        columnGap={4}
-        rowGap={10}
-      >
-        <GridItem area="editor" overflowX={"scroll"}>
-          <CodeEditor
-            code={code}
-            setCode={setCode}
-            placeholder={constants.EDITOR_PLACEHOLDER_TEXT}
-          />
-        </GridItem>
+          overflowX={"hidden"}
+          gridTemplateColumns="1fr 1fr"
+          columnGap={4}
+          rowGap={10}
+        >
+          <GridItem area="editor" overflowX={"scroll"}>
+            <CodeEditor
+              code={code}
+              setCode={setCode}
+              placeholder={constants.EDITOR_PLACEHOLDER_TEXT}
+            />
+          </GridItem>
 
-        <GridItem area="output">
-          <ExecutionOutput
-            isProgramExecuting={isProgramExecuting}
-            executionResult={executionResult}
-            loadingMessage="Executing program..."
-            defaultMessage="No execution results yet."
-          />
-        </GridItem>
+          <GridItem area="output">
+            <ExecutionOutput
+              isProgramExecuting={isProgramExecuting}
+              executionResult={executionResult}
+              loadingMessage="Executing program..."
+              defaultMessage="No execution results yet."
+            />
+          </GridItem>
 
-        <GridItem area="input">
-          <EditorInput
-            code={code}
-            inputs={inputs}
-            isProgramExecuting={isProgramExecuting}
-            executeProgram={executeProgram}
-            setInputValue={setInputValue}
-          />
-        </GridItem>
-      </Grid>
+          <GridItem area="input">
+            <EditorInput
+              code={code}
+              inputs={inputs}
+              isProgramExecuting={isProgramExecuting}
+              executeProgram={executeProgram}
+              setInputValue={setInputValue}
+            />
+          </GridItem>
+        </Grid>
+      </EnvironmentLoader>
     </Box>
   );
 }
