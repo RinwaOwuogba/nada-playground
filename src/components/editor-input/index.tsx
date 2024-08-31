@@ -4,6 +4,7 @@ import AutoEditorInput from "./auto-editor-input";
 import ManualEditorInput from "./manual-editor-input";
 import { InfoIcon } from "@chakra-ui/icons";
 import { VscPlay } from "react-icons/vsc";
+import { AddIcon } from "@chakra-ui/icons";
 
 const EditorInput = ({
   code,
@@ -18,7 +19,7 @@ const EditorInput = ({
 }: IEditorInputProps) => {
   return (
     <Box>
-      <Flex justifyContent="space-between" alignItems="center">
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <Box display="flex" alignItems="center">
           <Switch
             isChecked={isAutoMode}
@@ -42,34 +43,48 @@ const EditorInput = ({
           </Tooltip>
         </Box>
 
-        <Button
-          size="sm"
-          aria-label="Run Program"
-          onClick={() => executeProgram(inputs, code)}
-          isLoading={isProgramExecuting}
-          loadingText="Executing..."
-          mt={4}
-          leftIcon={<Icon as={VscPlay} />}
-          colorScheme="blue"
-          variant="outline"
-        >
-          Run
-        </Button>
+        <Flex columnGap={2}>
+          {!isAutoMode && (
+            <Button
+              size="sm"
+              colorScheme="blue"
+              aria-label="Add input"
+              onClick={addInput}
+              leftIcon={<AddIcon />}
+            >
+              Add Input
+            </Button>
+          )}
+
+          <Button
+            size="sm"
+            aria-label="Run Program"
+            onClick={() => executeProgram(inputs, code)}
+            isLoading={isProgramExecuting}
+            loadingText="Executing..."
+            leftIcon={<Icon as={VscPlay} />}
+            colorScheme="blue"
+            variant="outline"
+          >
+            Run
+          </Button>
+        </Flex>
       </Flex>
 
-      {isAutoMode ? (
-        <AutoEditorInput
-          inputs={inputs}
-          getInputPropertySetter={getInputPropertySetter}
-        />
-      ) : (
-        <ManualEditorInput
-          inputs={inputs}
-          getInputPropertySetter={getInputPropertySetter}
-          addInput={addInput as () => void}
-          removeInput={removeInput as (id: string) => void}
-        />
-      )}
+      <Box maxHeight={"200px"} overflowY={"auto"}>
+        {isAutoMode ? (
+          <AutoEditorInput
+            inputs={inputs}
+            getInputPropertySetter={getInputPropertySetter}
+          />
+        ) : (
+          <ManualEditorInput
+            inputs={inputs}
+            getInputPropertySetter={getInputPropertySetter}
+            removeInput={removeInput as (id: string) => void}
+          />
+        )}
+      </Box>
     </Box>
   );
 };

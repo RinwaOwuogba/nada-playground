@@ -12,12 +12,11 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { INadaInput } from "@/hooks/useNadaInput";
-import { AddIcon, MinusIcon } from "@chakra-ui/icons";
+import { MinusIcon } from "@chakra-ui/icons";
 
 const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
   inputs,
   getInputPropertySetter,
-  addInput,
   removeInput,
 }) => {
   const setInputValue = useCallback(
@@ -29,7 +28,7 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
 
   return (
     <>
-      <Table variant="simple" size="sm">
+      <Table variant="simple" size="sm" overflowY={"auto"}>
         <Thead>
           <Tr>
             <Th>Name</Th>
@@ -88,16 +87,6 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
           ))}
         </Tbody>
       </Table>
-      <Button
-        size="sm"
-        colorScheme="blue"
-        aria-label="Add input"
-        onClick={addInput}
-        mt={4}
-        leftIcon={<AddIcon />}
-      >
-        Add Input
-      </Button>
     </>
   );
 };
@@ -118,7 +107,6 @@ interface IManualEditorInputProps {
   getInputPropertySetter: (
     key: string
   ) => (name: string, value: string) => void;
-  addInput: () => void;
   removeInput: (id: string) => void;
 }
 
