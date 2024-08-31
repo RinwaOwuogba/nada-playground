@@ -1,6 +1,6 @@
 import { loadPythonEnvironment } from "@/lib/nada-executor";
 import { useState, useEffect } from "react";
-import { INadaInput } from "../useNadaInput";
+import { IInitialInputs } from "../useNadaInput";
 import { decodeProgramParamsFromURI } from "@/lib/code-sharing";
 import { useToast } from "@chakra-ui/react";
 
@@ -9,9 +9,7 @@ const useLoadEnvironment = () => {
   const [error, setError] = useState<Error | null>(null);
   const [intermediateMessage, setIntermediateMessage] = useState<string>("");
   const [initialCode, setInitialCode] = useState<string | null>(null);
-  const [initialInputs, setInitialInputs] = useState<INadaInput[] | undefined>(
-    undefined
-  );
+  const [initialInputs, setInitialInputs] = useState<IInitialInputs>({});
   const toast = useToast();
 
   useEffect(() => {
@@ -60,7 +58,7 @@ const useLoadEnvironment = () => {
     };
 
     loadEnvironment();
-  }, []);
+  }, [toast]);
 
   return { isLoading, error, intermediateMessage, initialCode, initialInputs };
 };

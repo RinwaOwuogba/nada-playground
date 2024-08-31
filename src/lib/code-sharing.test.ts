@@ -2,7 +2,7 @@ import {
   encodeProgramParamsForURI,
   decodeProgramParamsFromURI,
 } from "./code-sharing";
-import { INadaInput } from "@/hooks/useNadaInput";
+import { IInitialInputs } from "@/hooks/useNadaInput";
 
 describe("Code sharing functions", () => {
   it("should encode and decode program params correctly", () => {
@@ -19,9 +19,10 @@ def nada_main():
     return [Output(product, "product", party_charlie)]
     `;
 
-    const inputs: INadaInput[] = [
-      { id: "1", name: "num", type: "SecretInteger", value: "10" },
-    ];
+    const inputs: IInitialInputs = {
+      auto: [{ name: "num", type: "SecretInteger", value: "10" }],
+      manual: [{ id: "2", name: "num", type: "SecretInteger", value: "10" }],
+    };
 
     // Encode the program params
     const encodedParams = encodeProgramParamsForURI(code, inputs);

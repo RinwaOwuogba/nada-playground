@@ -27,6 +27,7 @@ const useExecuteNadaProgram = () => {
           duration: 6000,
           isClosable: true,
           variant: "subtle",
+          position: "top",
         });
       } finally {
         setIsProgramExecuting(false);

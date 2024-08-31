@@ -3,17 +3,20 @@ import { VscShare } from "react-icons/vsc";
 import { INadaInput } from "@/hooks/useNadaInput";
 import { encodeProgramParamsForURI } from "@/lib/code-sharing";
 
-const Header = ({ code, inputs }: IHeader) => {
+const Header = ({ code, manualInputs, autoInputs }: IHeader) => {
   const toast = useToast();
 
   const handleShare = () => {
-    const encoded = encodeProgramParamsForURI(code, inputs);
+    const encoded = encodeProgramParamsForURI(code, {
+      manual: manualInputs,
+      auto: autoInputs,
+    });
     navigator.clipboard.writeText(`${window.location.origin}?share=${encoded}`);
     toast({
       title: "Playground link copied to clipboard!",
       status: "success",
       variant: "subtle",
-      position: "bottom-right",
+      position: "top",
     });
   };
 
@@ -50,5 +53,6 @@ export default Header;
 
 interface IHeader {
   code: string;
-  inputs: INadaInput[];
+  manualInputs: INadaInput[];
+  autoInputs: INadaInput[];
 }

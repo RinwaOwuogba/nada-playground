@@ -23,7 +23,9 @@ function App() {
     toggleMode,
     addInput,
     removeInput,
-  } = useNadaInput(code, initialInputs);
+    manualInputs,
+    autoInputs,
+  } = useNadaInput({ code, initialInputs });
   const { executeProgram, executionResult, isProgramExecuting } =
     useExecuteNadaProgram();
 
@@ -35,7 +37,7 @@ function App() {
 
   return (
     <Box height="100vh" display="flex" flexDirection="column">
-      <Header code={code} inputs={inputs} />
+      <Header code={code} manualInputs={manualInputs} autoInputs={autoInputs} />
 
       <EnvironmentLoader
         isLoading={isLoading}
