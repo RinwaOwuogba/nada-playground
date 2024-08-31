@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ExecutionOutput from "./index";
 
@@ -43,8 +43,13 @@ describe("ExecutionOutput", () => {
       />
     );
 
-    expect(screen.getByText("SecretInteger(NadaInt(1))")).toBeInTheDocument();
-    expect(screen.getByText("SecretInteger(NadaInt(2))")).toBeInTheDocument();
+    executionResult.forEach(({ name, value }) => {
+      const outputElement = screen.getByText((content) => {
+        return content === `${name}: ${value}`;
+      });
+      expect(outputElement).toBeInTheDocument();
+    });
+
     expect(
       screen.queryByText("No execution results yet.")
     ).not.toBeInTheDocument();

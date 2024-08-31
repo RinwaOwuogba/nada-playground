@@ -1,66 +1,45 @@
-import { useMemo, useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { useAutoNadaInput } from "./useAutoNadaInput";
+import { useManualNadaInput } from "./useManualNadaInput";
 
-export function useNadaInput(code: string): {
-  inputs: INadaInput[];
-  setInputValue: (name: string, value: string) => void;
-} {
-  const [inputs, setInputs] = useState<INadaInput[]>([]);
+export function useNadaInput(code: string) {
+  const [isAutoMode, setIsAutoMode] = useState(true);
 
-  useMemo(() => {
-    setInputs((prevInputs) => extractNadaInputs(code, prevInputs));
-  }, [code, setInputs]);
+  const { inputs: autoInputs, setInputValue: setAutoInputValue } =
+    useAutoNadaInput(code);
+  const {
+    inputs: manualInputs,
+    setInputProperty: setManualInputProperty,
+    addInput,
+  } = useManualNadaInput();
 
-  const setInputValue = useCallback(
-    (name: string, value: string) => {
-      setInputs((prevInputs) =>
-        prevInputs.map((input) =>
-          input.name === name ? { ...input, value } : input
-        )
-      );
-    },
-    [setInputs]
+  const inputs = useMemo(
+    () => (isAutoMode ? autoInputs : manualInputs),
+    [isAutoMode, autoInputs, manualInputs]
   );
 
-  return { inputs, setInputValue };
-}
-
-function extractNadaInputs(
-  code: string,
-  existingInputs: INadaInput[]
-): INadaInput[] {
-  const pattern =
-    /(\w+)\s*=\s*(SecretInteger|PublicInteger|Integer|SecretUnsignedInteger|PublicUnsignedInteger|UnsignedInteger|SecretBoolean|PublicBoolean)\(Input\(\s*(?:name\s*=\s*)?["']([^"']+)["'][\s\S]*?\)\)/g;
-  const matches = Array.from(code.matchAll(pattern));
-  const newInputs: INadaInput[] = [];
-  const seenNames = new Set<string>();
-
-  for (const match of matches) {
-    const name = match[3];
-    const type = match[2];
-
-    if (!seenNames.has(name)) {
-      seenNames.add(name);
-      const existingInput = existingInputs.find((input) => input.name === name);
-      if (existingInput) {
-        newInputs.push({
-          ...existingInput,
-          type: type, // Update the type in case it has changed
-        });
+  const getInputPropertySetter = useCallback(
+    (key: string) => (nameOrId: string, value: string) => {
+      if (isAutoMode) {
+        setAutoInputValue(nameOrId, value);
       } else {
-        newInputs.push({
-          name,
-          type,
-          value: "",
-        });
+        setManualInputProperty(key, nameOrId, value);
       }
-    }
-  }
+    },
+    [isAutoMode, setAutoInputValue, setManualInputProperty]
+  );
 
-  return newInputs;
+  const toggleMode = useCallback(() => {
+    setIsAutoMode((prev) => !prev);
+  }, []);
+
+  return {
+    inputs,
+    getInputPropertySetter,
+    isAutoMode,
+    toggleMode,
+    addInput: isAutoMode ? undefined : addInput,
+  };
 }
 
-export interface INadaInput {
-  name: string;
-  type: string;
-  value: string;
-}
+export type { INadaInput } from "./utils";

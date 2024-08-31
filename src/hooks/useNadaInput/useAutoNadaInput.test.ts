@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
-import { useNadaInput } from "./index";
+import { useAutoNadaInput } from "./useAutoNadaInput";
 
-describe("useNadaInput", () => {
+describe("useAutoNadaInput", () => {
   it("extracts inputs correctly", () => {
     const code = `
       from nada_dsl import *
@@ -13,7 +13,7 @@ describe("useNadaInput", () => {
           return [num_1, num_2, bool_1]
     `;
 
-    const { result } = renderHook(() => useNadaInput(code));
+    const { result } = renderHook(() => useAutoNadaInput(code));
 
     expect(result.current.inputs).toHaveLength(3);
 
@@ -27,7 +27,7 @@ describe("useNadaInput", () => {
   });
 
   it("should handle empty code", () => {
-    const { result } = renderHook(() => useNadaInput(""));
+    const { result } = renderHook(() => useAutoNadaInput(""));
 
     expect(result.current.inputs).toEqual([]);
   });
@@ -40,7 +40,7 @@ describe("useNadaInput", () => {
           return []
     `;
 
-    const { result } = renderHook(() => useNadaInput(testCode));
+    const { result } = renderHook(() => useAutoNadaInput(testCode));
 
     expect(result.current.inputs).toEqual([]);
   });
@@ -55,7 +55,7 @@ describe("useNadaInput", () => {
           return [num_1, num_2]
     `;
 
-    const { result } = renderHook(() => useNadaInput(code));
+    const { result } = renderHook(() => useAutoNadaInput(code));
 
     expect(result.current.inputs).toHaveLength(1);
     expect(result.current.inputs[0].name).toBe("num_2");
@@ -71,7 +71,7 @@ describe("useNadaInput", () => {
           return [num_1]
     `;
 
-    const { result } = renderHook(() => useNadaInput(code));
+    const { result } = renderHook(() => useAutoNadaInput(code));
 
     expect(result.current.inputs).toHaveLength(1);
     const inputName = result.current.inputs[0].name;
@@ -108,7 +108,7 @@ describe("useNadaInput", () => {
       .map((type, index) => generateTestCode(type, `var${index + 1}`))
       .join("\n");
 
-    const { result } = renderHook(() => useNadaInput(code));
+    const { result } = renderHook(() => useAutoNadaInput(code));
 
     expect(
       result.current.inputs.map(({ name, type }) => ({ name, type }))
@@ -129,9 +129,12 @@ describe("useNadaInput", () => {
           return [num_1]
     `;
 
-    const { result, rerender } = renderHook(({ code }) => useNadaInput(code), {
-      initialProps: { code: initialCode },
-    });
+    const { result, rerender } = renderHook(
+      ({ code }) => useAutoNadaInput(code),
+      {
+        initialProps: { code: initialCode },
+      }
+    );
 
     // Set initial value
     act(() => {
@@ -170,7 +173,7 @@ describe("useNadaInput", () => {
           return [num_1, num_1_duplicate]
     `;
 
-    const { result } = renderHook(() => useNadaInput(code));
+    const { result } = renderHook(() => useAutoNadaInput(code));
 
     expect(result.current.inputs).toHaveLength(1);
     expect(result.current.inputs[0].name).toBe("num_1");
@@ -186,9 +189,12 @@ describe("useNadaInput", () => {
           return [num_1]
     `;
 
-    const { result, rerender } = renderHook(({ code }) => useNadaInput(code), {
-      initialProps: { code: initialCode },
-    });
+    const { result, rerender } = renderHook(
+      ({ code }) => useAutoNadaInput(code),
+      {
+        initialProps: { code: initialCode },
+      }
+    );
 
     expect(result.current.inputs).toHaveLength(1);
     expect(result.current.inputs[0].name).toBe("num_1");

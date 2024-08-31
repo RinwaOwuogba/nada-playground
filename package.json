@@ -12,6 +12,7 @@
     "exp-jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@codemirror/lang-python": "^6.1.6",
     "@codemirror/view": "^6.32.0",

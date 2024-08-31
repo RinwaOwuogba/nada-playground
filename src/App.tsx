@@ -32,7 +32,8 @@ function App() {
   );
   const toast = useToast();
 
-  const { inputs, setInputValue } = useNadaInput(code);
+  const { inputs, getInputPropertySetter, isAutoMode, toggleMode, addInput } =
+    useNadaInput(code);
 
   const executeProgram = useCallback(
     async (inputs: INadaInput[], code: string) => {
@@ -97,10 +98,13 @@ function App() {
           <GridItem area="input">
             <EditorInput
               code={code}
+              addInput={addInput}
+              toggleMode={toggleMode}
+              isAutoMode={isAutoMode}
               inputs={inputs}
               isProgramExecuting={isProgramExecuting}
               executeProgram={executeProgram}
-              setInputValue={setInputValue}
+              getInputPropertySetter={getInputPropertySetter}
             />
           </GridItem>
         </Grid>

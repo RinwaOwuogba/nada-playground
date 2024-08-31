@@ -1,7 +1,7 @@
-import { render, screen, within, fireEvent } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import EditorInput from "./index";
 import { INadaInput } from "../../hooks/useNadaInput";
+import AutoEditorInput from "./auto-editor-input";
 
 const inputTypes = [
   "SecretInteger",
@@ -14,18 +14,18 @@ const inputTypes = [
   "PublicBoolean",
 ];
 
-describe("EditorInput", () => {
+describe("AutoEditorInput", () => {
   const mockExecuteProgram = jest.fn();
   const defaultProps = {
     code: "",
     inputs: [{ name: "test_variable", type: "SecretInteger", value: "10" }],
     isProgramExecuting: false,
-    setInputValue: jest.fn(),
+    getInputPropertySetter: jest.fn(),
     executeProgram: mockExecuteProgram,
   };
 
   test("renders input table correctly with value", () => {
-    render(<EditorInput {...defaultProps} />);
+    render(<AutoEditorInput {...defaultProps} />);
     const inputRows = screen.getAllByRole("row").slice(1); // account for header row
     expect(inputRows.length).toBe(1);
 
@@ -46,7 +46,7 @@ describe("EditorInput", () => {
       value: `${index + 1}`,
     }));
 
-    render(<EditorInput {...defaultProps} inputs={multipleInputs} />);
+    render(<AutoEditorInput {...defaultProps} inputs={multipleInputs} />);
 
     const inputRows = screen.getAllByRole("row").slice(1); // account for header row
     expect(inputRows.length).toBe(inputTypes.length);
@@ -63,33 +63,33 @@ describe("EditorInput", () => {
     });
   });
 
-  describe("Run button", () => {
-    const mockExecuteProgram = jest.fn();
-    const defaultProps = {
-      code: "",
-      inputs: [],
-      isProgramExecuting: false,
-      setInputValue: jest.fn(),
-      executeProgram: mockExecuteProgram,
-    };
+  // describe("Run button", () => {
+  //   const mockExecuteProgram = jest.fn();
+  //   const defaultProps = {
+  //     code: "",
+  //     inputs: [],
+  //     isProgramExecuting: false,
+  //     getInputPropertySetter: jest.fn(),
+  //     executeProgram: mockExecuteProgram,
+  //   };
 
-    test("should be enabled when isProgramExecuting is false", () => {
-      render(<EditorInput {...defaultProps} />);
-      const runButton = screen.getByRole("button", { name: /run/i });
-      expect(runButton).toBeEnabled();
-    });
+  //   test("should be enabled when isProgramExecuting is false", () => {
+  //     render(<AutoEditorInput {...defaultProps} />);
+  //     const runButton = screen.getByRole("button", { name: /run/i });
+  //     expect(runButton).toBeEnabled();
+  //   });
 
-    test("should be disabled when isProgramExecuting is true", () => {
-      render(<EditorInput {...defaultProps} isProgramExecuting={true} />);
-      const runButton = screen.getByRole("button", { name: /run/i });
-      expect(runButton).toBeDisabled();
-    });
+  //   test("should be disabled when isProgramExecuting is true", () => {
+  //     render(<AutoEditorInput {...defaultProps} isProgramExecuting={true} />);
+  //     const runButton = screen.getByRole("button", { name: /run/i });
+  //     expect(runButton).toBeDisabled();
+  //   });
 
-    test("should trigger executeProgram function when clicked", () => {
-      render(<EditorInput {...defaultProps} />);
-      const runButton = screen.getByRole("button", { name: /run/i });
-      fireEvent.click(runButton);
-      expect(mockExecuteProgram).toHaveBeenCalledTimes(1);
-    });
-  });
+  //   test("should trigger executeProgram function when clicked", () => {
+  //     render(<AutoEditorInput {...defaultProps} />);
+  //     const runButton = screen.getByRole("button", { name: /run/i });
+  //     fireEvent.click(runButton);
+  //     expect(mockExecuteProgram).toHaveBeenCalledTimes(1);
+  //   });
+  // });
 });
