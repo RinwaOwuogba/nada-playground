@@ -1,37 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Text, Grid, GridItem } from "@chakra-ui/react";
 import "./App.css";
 import CodeEditor from "./components/code-editor";
 import EditorInput from "./components/editor-input";
-import ExecutionOutput, {
-  IExecutionResult,
-} from "./components/execution-output";
 import constants from "./constants";
 import { useNadaInput } from "./hooks/useNadaInput";
 import EnvironmentLoader from "./components/environment-loader";
 import useExecuteNadaProgram from "./hooks/useExecuteNadaProgram";
 import Header from "./components/header";
-
-const sampleCode = `\
-from nada_dsl import *
-
-def nada_main():
-    party_alice = Party(name="Alice")
-    party_bob = Party(name="Bob")
-    party_charlie = Party(name="Charlie")
-    num_1 = SecretInteger(Input(name="num_1", party=party_alice))
-    num_2 = SecretInteger(Input(name="num_2", party=party_bob))
-    product = num_1 * num_2
-    return [Output(product, "product", party_charlie)]
-`;
+import useLoadEnvironment from "./hooks/useLoadEnvironment";
+import ExecutionOutput from "./components/execution-output";
 
 function App() {
-  const [code, setCode] = useState(sampleCode);
-  const [isProgramExecuting, setIsProgramExecuting] = useState(false);
-  const [executionResult, setExecutionResult] = useState<IExecutionResult[]>(
-    []
-  );
+  const [code, setCode] = useState(constants.SAMPLE_CODE);
 
+  const { isLoading, error, intermediateMessage, initialCode, initialInputs } =
+    useLoadEnvironment();
   const {
     inputs,
     getInputPropertySetter,
@@ -39,18 +23,25 @@ function App() {
     toggleMode,
     addInput,
     removeInput,
-  } = useNadaInput(code);
+  } = useNadaInput(code, initialInputs);
+  const { executeProgram, executionResult, isProgramExecuting } =
+    useExecuteNadaProgram();
 
-  const { executeProgram } = useExecuteNadaProgram({
-    setIsProgramExecuting,
-    setExecutionResult,
-  });
+  useEffect(() => {
+    if (initialCode) {
+      setCode(initialCode);
+    }
+  }, [initialCode]);
 
   return (
     <Box height="100vh" display="flex" flexDirection="column">
       <Header code={code} inputs={inputs} />
 
-      <EnvironmentLoader>
+      <EnvironmentLoader
+        isLoading={isLoading}
+        error={error as Error}
+        intermediateMessage={intermediateMessage}
+      >
         <Grid
           padding={5}
           templateAreas={`

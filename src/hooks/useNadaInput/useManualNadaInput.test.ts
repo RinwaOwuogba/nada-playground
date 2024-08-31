@@ -11,6 +11,17 @@ describe("useManualNadaInput", () => {
     expect(result.current.inputs[0].value).toBe("");
   });
 
+  it("should use initial inputs when provided", () => {
+    const initialInputs = [
+      { id: "1", name: "num_1", type: "SecretInteger", value: "10" },
+      { id: "2", name: "num_2", type: "PublicInteger", value: "20" },
+    ];
+
+    const { result } = renderHook(() => useManualNadaInput(initialInputs));
+
+    expect(result.current.inputs).toEqual(initialInputs);
+  });
+
   it("should add a new input when addInput is called", () => {
     const { result } = renderHook(() => useManualNadaInput());
     act(() => {

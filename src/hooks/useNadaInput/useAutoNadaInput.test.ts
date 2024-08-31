@@ -2,6 +2,29 @@ import { act, renderHook } from "@testing-library/react";
 import { useAutoNadaInput } from "./useAutoNadaInput";
 
 describe("useAutoNadaInput", () => {
+  it("uses initial inputs", () => {
+    const code = `
+      from nada_dsl import *
+      
+      def nada_main():
+          num_1 = SecretInteger(Input(name="num_1"))
+          num_2 = PublicInteger(Input(name="num_2"))
+          return [num_1, num_2]
+    `;
+
+    const initialInputs = [
+      { name: "num_1", type: "SecretInteger", value: "10" },
+      { name: "num_2", type: "PublicInteger", value: "20" },
+    ];
+
+    const { result } = renderHook(() => useAutoNadaInput(code, initialInputs));
+
+    expect(result.current.inputs).toEqual([
+      { name: "num_1", type: "SecretInteger", value: "10" },
+      { name: "num_2", type: "PublicInteger", value: "20" },
+    ]);
+  });
+
   it("extracts inputs correctly", () => {
     const code = `
       from nada_dsl import *

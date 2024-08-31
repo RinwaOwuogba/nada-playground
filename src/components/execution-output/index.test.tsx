@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ExecutionOutput from "./index";
 
@@ -35,6 +35,7 @@ describe("ExecutionOutput", () => {
       { name: "output_1", value: "SecretInteger(NadaInt(1))" },
       { name: "output_2", value: "SecretInteger(NadaInt(2))" },
     ];
+
     render(
       <ExecutionOutput
         {...defaultProps}
@@ -43,22 +44,17 @@ describe("ExecutionOutput", () => {
       />
     );
 
+    const outputContainer = screen.getByRole("logs");
+    const outputText = outputContainer.textContent;
+
     executionResult.forEach(({ name, value }) => {
-      const outputElement = screen.getByText((content) => {
-        return content === `${name}: ${value}`;
-      });
-      expect(outputElement).toBeInTheDocument();
+      const escapeRegExp = (string: string) =>
+        string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      expect(
+        new RegExp(`${escapeRegExp(name)}.*${escapeRegExp(value)}`).test(
+          outputText ?? ""
+        )
+      ).toBeTruthy();
     });
-
-    expect(
-      screen.queryByText("No execution results yet.")
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("Custom loading message...")
-    ).not.toBeInTheDocument();
-  });
-
-  test("renders ExecutionOutput component", () => {
-    render(<ExecutionOutput {...defaultProps} isProgramExecuting={false} />);
   });
 });

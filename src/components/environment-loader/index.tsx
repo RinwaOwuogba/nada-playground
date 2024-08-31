@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Spinner, Text, VStack } from "@chakra-ui/react";
-import useLoadPythonEnvironment from "@/hooks/useLoadPythonEnvironment";
 
-const EnvironmentLoader: React.FC<{ children: React.ReactNode }> = ({
+const EnvironmentLoader: React.FC<IEnvironmentLoaderProps> = ({
   children,
+  isLoading,
+  error,
+  intermediateMessage,
 }) => {
-  const { isLoading, error } = useLoadPythonEnvironment();
-
   if (isLoading) {
     return (
       <Box
@@ -24,7 +24,7 @@ const EnvironmentLoader: React.FC<{ children: React.ReactNode }> = ({
         <VStack spacing={4}>
           <Spinner size="xl" color="blue.500" thickness="4px" />
           <Text color="white" fontSize="xl" fontWeight="bold">
-            Preparing Python Environment...
+            {intermediateMessage}
           </Text>
         </VStack>
       </Box>
@@ -55,5 +55,12 @@ const EnvironmentLoader: React.FC<{ children: React.ReactNode }> = ({
 
   return <>{children}</>;
 };
+
+interface IEnvironmentLoaderProps {
+  children: React.ReactNode;
+  isLoading: boolean;
+  error?: Error;
+  intermediateMessage?: string;
+}
 
 export default EnvironmentLoader;

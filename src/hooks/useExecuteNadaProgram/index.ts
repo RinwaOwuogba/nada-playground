@@ -1,18 +1,19 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { INadaInput } from "@/hooks/useNadaInput";
 import executeNadaCode from "@/lib/nada-executor";
 import { IExecutionResult } from "@/components/execution-output";
 
-const useExecuteNadaProgram = ({
-  setIsProgramExecuting,
-  setExecutionResult,
-}: IUseExecuteNadaProgramProps) => {
+const useExecuteNadaProgram = () => {
+  const [isProgramExecuting, setIsProgramExecuting] = useState(false);
+  const [executionResult, setExecutionResult] = useState<IExecutionResult[]>(
+    []
+  );
+
   const toast = useToast();
 
   const executeProgram = useCallback(
     async (inputs: INadaInput[], code: string) => {
-      console.log("inputs", inputs);
       setIsProgramExecuting(true);
       try {
         const result = await executeNadaCode(inputs, code);
@@ -34,12 +35,7 @@ const useExecuteNadaProgram = ({
     [setIsProgramExecuting, setExecutionResult, toast]
   );
 
-  return { executeProgram };
+  return { executeProgram, executionResult, isProgramExecuting };
 };
-
-interface IUseExecuteNadaProgramProps {
-  setIsProgramExecuting: (isExecuting: boolean) => void;
-  setExecutionResult: (result: IExecutionResult[]) => void;
-}
 
 export default useExecuteNadaProgram;

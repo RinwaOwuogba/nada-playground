@@ -1,18 +1,19 @@
 import { useState, useCallback, useMemo } from "react";
 import { useAutoNadaInput } from "./useAutoNadaInput";
 import { useManualNadaInput } from "./useManualNadaInput";
+import { INadaInput } from "./utils";
 
-export function useNadaInput(code: string) {
+export function useNadaInput(code: string, initialInputs?: INadaInput[]) {
   const [isAutoMode, setIsAutoMode] = useState(true);
 
   const { inputs: autoInputs, setInputValue: setAutoInputValue } =
-    useAutoNadaInput(code);
+    useAutoNadaInput(code, initialInputs);
   const {
     inputs: manualInputs,
     setInputProperty: setManualInputProperty,
     addInput,
     removeInput,
-  } = useManualNadaInput();
+  } = useManualNadaInput(initialInputs);
 
   const inputs = useMemo(
     () => (isAutoMode ? autoInputs : manualInputs),
@@ -44,4 +45,4 @@ export function useNadaInput(code: string) {
   };
 }
 
-export type { INadaInput } from "./utils";
+export type { INadaInput };

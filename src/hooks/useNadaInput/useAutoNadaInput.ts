@@ -1,8 +1,14 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { INadaInput } from "./utils";
 
-export function useAutoNadaInput(code: string) {
+export function useAutoNadaInput(code: string, initialInputs?: INadaInput[]) {
   const [inputs, setInputs] = useState<INadaInput[]>([]);
+
+  useEffect(() => {
+    if (initialInputs) {
+      setInputs(initialInputs);
+    }
+  }, [initialInputs]);
 
   const setInputValue = useCallback((name: string, value: string) => {
     setInputs((prevInputs) =>

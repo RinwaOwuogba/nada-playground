@@ -44,7 +44,13 @@ const ExecutionOutput = ({
       overflow="auto"
       height="300px"
     >
-      <Box as="pre" whiteSpace="pre-wrap" wordBreak="break-word">
+      <Box
+        as="pre"
+        whiteSpace="pre-wrap"
+        wordBreak="break-word"
+        role="logs"
+        aria-label="Execution Output"
+      >
         {renderContent()}
       </Box>
     </Box>
