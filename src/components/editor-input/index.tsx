@@ -1,8 +1,9 @@
-import { Box, Button, Flex, Switch, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Switch, Tooltip } from "@chakra-ui/react";
 import { INadaInput } from "@/hooks/useNadaInput";
 import AutoEditorInput from "./auto-editor-input";
 import ManualEditorInput from "./manual-editor-input";
 import { InfoIcon } from "@chakra-ui/icons";
+import { VscPlay } from "react-icons/vsc";
 
 const EditorInput = ({
   code,
@@ -48,6 +49,9 @@ const EditorInput = ({
           isLoading={isProgramExecuting}
           loadingText="Executing..."
           mt={4}
+          leftIcon={<Icon as={VscPlay} />}
+          colorScheme="blue"
+          variant="outline"
         >
           Run
         </Button>

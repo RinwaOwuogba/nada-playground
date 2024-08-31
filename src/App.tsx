@@ -36,7 +36,7 @@ function App() {
   }, [initialCode]);
 
   return (
-    <Box height="100vh" display="flex" flexDirection="column">
+    <Box height="100vh" display="flex" flexDirection="column" overflow="hidden">
       <Header code={code} manualInputs={manualInputs} autoInputs={autoInputs} />
 
       <EnvironmentLoader
@@ -55,7 +55,7 @@ function App() {
           columnGap={4}
           rowGap={4}
         >
-          <GridItem area="editor" overflowX={"scroll"}>
+          <GridItem area="editor">
             <Text fontWeight={"bold"} color={"gray.400"}>
               Editor
             </Text>
