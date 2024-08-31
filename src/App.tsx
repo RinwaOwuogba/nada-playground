@@ -10,6 +10,7 @@ import constants from "./constants";
 import { useNadaInput } from "./hooks/useNadaInput";
 import EnvironmentLoader from "./components/environment-loader";
 import useExecuteNadaProgram from "./hooks/useExecuteNadaProgram";
+import Header from "./components/header";
 
 const sampleCode = `\
 from nada_dsl import *
@@ -47,11 +48,7 @@ function App() {
 
   return (
     <Box height="100vh" display="flex" flexDirection="column">
-      <Box bg="blue.500" padding={5}>
-        <Text color={"white"} fontSize={"xxx-large"} fontWeight={"bold"}>
-          Nada Playground
-        </Text>
-      </Box>
+      <Header code={code} inputs={inputs} />
 
       <EnvironmentLoader>
         <Grid
@@ -63,9 +60,12 @@ function App() {
           overflowX={"hidden"}
           gridTemplateColumns="1fr 1fr"
           columnGap={4}
-          rowGap={10}
+          rowGap={4}
         >
           <GridItem area="editor" overflowX={"scroll"}>
+            <Text fontWeight={"bold"} color={"gray.400"}>
+              Editor
+            </Text>
             <CodeEditor
               code={code}
               setCode={setCode}
@@ -74,6 +74,9 @@ function App() {
           </GridItem>
 
           <GridItem area="output">
+            <Text fontWeight={"bold"} color={"gray.400"}>
+              Output
+            </Text>
             <ExecutionOutput
               isProgramExecuting={isProgramExecuting}
               executionResult={executionResult}
@@ -83,6 +86,10 @@ function App() {
           </GridItem>
 
           <GridItem area="input">
+            <Text fontWeight={"bold"} color={"gray.400"}>
+              Input
+            </Text>
+
             <EditorInput
               code={code}
               addInput={addInput}
