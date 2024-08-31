@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Box, Text, Grid, GridItem, useToast } from "@chakra-ui/react";
+import { useState } from "react";
+import { Box, Text, Grid, GridItem } from "@chakra-ui/react";
 import "./App.css";
 import CodeEditor from "./components/code-editor";
 import EditorInput from "./components/editor-input";
@@ -7,9 +7,9 @@ import ExecutionOutput, {
   IExecutionResult,
 } from "./components/execution-output";
 import constants from "./constants";
-import executeNadaCode from "./lib/nada-executor";
-import { INadaInput, useNadaInput } from "./hooks/useNadaInput";
+import { useNadaInput } from "./hooks/useNadaInput";
 import EnvironmentLoader from "./components/environment-loader";
+import useExecuteNadaProgram from "./hooks/useExecuteNadaProgram";
 
 const sampleCode = `\
 from nada_dsl import *
@@ -30,33 +30,20 @@ function App() {
   const [executionResult, setExecutionResult] = useState<IExecutionResult[]>(
     []
   );
-  const toast = useToast();
 
-  const { inputs, getInputPropertySetter, isAutoMode, toggleMode, addInput } =
-    useNadaInput(code);
+  const {
+    inputs,
+    getInputPropertySetter,
+    isAutoMode,
+    toggleMode,
+    addInput,
+    removeInput,
+  } = useNadaInput(code);
 
-  const executeProgram = useCallback(
-    async (inputs: INadaInput[], code: string) => {
-      setIsProgramExecuting(true);
-      try {
-        const result = await executeNadaCode(inputs, code);
-        setExecutionResult(result);
-      } catch (error: unknown) {
-        const err = error as Error;
-        toast({
-          title: "Error",
-          description: err.message,
-          status: "error",
-          duration: 6000,
-          isClosable: true,
-          variant: "subtle",
-        });
-      } finally {
-        setIsProgramExecuting(false);
-      }
-    },
-    [setIsProgramExecuting, setIsProgramExecuting, toast]
-  );
+  const { executeProgram } = useExecuteNadaProgram({
+    setIsProgramExecuting,
+    setExecutionResult,
+  });
 
   return (
     <Box height="100vh" display="flex" flexDirection="column">
@@ -99,6 +86,7 @@ function App() {
             <EditorInput
               code={code}
               addInput={addInput}
+              removeInput={removeInput}
               toggleMode={toggleMode}
               isAutoMode={isAutoMode}
               inputs={inputs}

@@ -8,19 +8,22 @@ const ExecutionOutput = ({
 }: IExecutionOutputProps) => {
   const renderContent = () => {
     if (isProgramExecuting) {
-      return <>{loadingMessage}</>;
+      return <Box color="blue.200">{loadingMessage}</Box>;
     }
 
     if (executionResult.length === 0) {
-      return <>{defaultMessage}</>;
+      return <Box color="blue.200">{defaultMessage}</Box>;
     }
 
     return (
       <>
         {executionResult.map((result, index) => (
-          <div key={index}>
-            {result.name}: {result.value}
-          </div>
+          <Box key={index} color="blue.200">
+            <Box as="span" color="blue.300" fontWeight="semibold">
+              {result.name}:
+            </Box>{" "}
+            {result.value}
+          </Box>
         ))}
       </>
     );
@@ -28,17 +31,22 @@ const ExecutionOutput = ({
 
   return (
     <Box
-      border={"1px solid"}
-      borderColor={"gray.200"}
-      color={"gray.500"}
-      fontWeight={"600"}
-      backgroundColor={"gray.100"}
+      border="1px solid"
+      borderColor="blue.600"
+      color="blue.200"
+      fontWeight="600"
+      backgroundColor="blue.700"
       h="100%"
-      padding={2}
-      borderRadius={2}
-      className="code"
+      padding={4}
+      borderRadius="md"
+      fontFamily="mono"
+      fontSize="sm"
+      overflow="auto"
+      height="300px"
     >
-      {renderContent()}
+      <Box as="pre" whiteSpace="pre-wrap" wordBreak="break-word">
+        {renderContent()}
+      </Box>
     </Box>
   );
 };

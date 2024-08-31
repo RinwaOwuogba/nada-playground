@@ -21,14 +21,21 @@ export function useManualNadaInput() {
     });
   }, [setInputs]);
 
-  return { inputs, setInputProperty, addInput };
+  const removeInput = useCallback(
+    (id: string) => {
+      setInputs((prevInputs) => prevInputs.filter((input) => input.id !== id));
+    },
+    [setInputs]
+  );
+
+  return { inputs, setInputProperty, addInput, removeInput };
 }
 
 const generateDefaultInput = (): INadaInput => {
   return {
     id: Math.random().toString(36).substring(2, 10),
     name: "",
-    type: "",
+    type: "SecretInteger",
     value: "",
   };
 };

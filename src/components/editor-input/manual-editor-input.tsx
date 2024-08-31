@@ -9,13 +9,16 @@ import {
   Th,
   Td,
   Input,
+  IconButton,
 } from "@chakra-ui/react";
 import { INadaInput } from "@/hooks/useNadaInput";
+import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 
 const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
   inputs,
   getInputPropertySetter,
   addInput,
+  removeInput,
 }) => {
   const setInputValue = useCallback(
     (key: string, name: string, value: string) => {
@@ -26,7 +29,7 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
 
   return (
     <>
-      <Table variant="simple">
+      <Table variant="simple" size="sm">
         <Thead>
           <Tr>
             <Th>Name</Th>
@@ -39,6 +42,7 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
             <Tr key={input.id}>
               <Td>
                 <Input
+                  size="sm"
                   value={input.name}
                   onChange={(e) =>
                     setInputValue("name", input.id ?? "", e.target.value)
@@ -48,6 +52,7 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
               </Td>
               <Td>
                 <Select
+                  size="sm"
                   value={input.type}
                   onChange={(e) =>
                     setInputValue("type", input.id ?? "", e.target.value)
@@ -62,6 +67,7 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
               </Td>
               <Td>
                 <Input
+                  size="sm"
                   value={input.value}
                   onChange={(e) =>
                     setInputValue("value", input.id ?? "", e.target.value)
@@ -69,11 +75,27 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
                   placeholder="Input value"
                 />
               </Td>
+              <Td>
+                <IconButton
+                  colorScheme="red"
+                  size="sm"
+                  aria-label="Remove input"
+                  icon={<MinusIcon />}
+                  onClick={() => removeInput(input.id ?? "")}
+                />
+              </Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
-      <Button name="add-input" onClick={addInput} mt={4}>
+      <Button
+        size="sm"
+        colorScheme="blue"
+        aria-label="Add input"
+        onClick={addInput}
+        mt={4}
+        leftIcon={<AddIcon />}
+      >
         Add Input
       </Button>
     </>
@@ -97,6 +119,7 @@ interface IManualEditorInputProps {
     key: string
   ) => (name: string, value: string) => void;
   addInput: () => void;
+  removeInput: (id: string) => void;
 }
 
 export default ManualEditorInput;

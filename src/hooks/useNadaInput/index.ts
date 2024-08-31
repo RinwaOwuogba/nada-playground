@@ -11,6 +11,7 @@ export function useNadaInput(code: string) {
     inputs: manualInputs,
     setInputProperty: setManualInputProperty,
     addInput,
+    removeInput,
   } = useManualNadaInput();
 
   const inputs = useMemo(
@@ -39,6 +40,7 @@ export function useNadaInput(code: string) {
     isAutoMode,
     toggleMode,
     addInput: isAutoMode ? undefined : addInput,
+    removeInput: isAutoMode ? undefined : removeInput,
   };
 }
 
