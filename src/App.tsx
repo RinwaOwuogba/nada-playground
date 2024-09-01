@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, Text, Grid, GridItem } from "@chakra-ui/react";
 import "./App.css";
 import CodeEditor from "./components/code-editor";
@@ -16,6 +16,7 @@ function App() {
 
   const { isLoading, error, intermediateMessage, initialCode, initialInputs } =
     useLoadEnvironment();
+
   const {
     inputs,
     getInputPropertySetter,
@@ -27,7 +28,7 @@ function App() {
     autoInputs,
     setAutoInputs,
     setManualInputs,
-  } = useNadaInput({ code, initialInputs });
+  } = useNadaInput(code);
   const { executeProgram, executionResult, isProgramExecuting } =
     useExecuteNadaProgram();
 
@@ -35,13 +36,20 @@ function App() {
     if (initialCode) {
       setCode(initialCode);
     }
+
+    if (initialInputs.manual) setManualInputs(initialInputs.manual);
+
+    if (initialInputs.auto) setAutoInputs(initialInputs.auto);
   }, [initialCode]);
 
-  const loadProgram = (program: string, inputs: INadaInput[]) => {
-    setCode(program);
-    setManualInputs(inputs);
-    setAutoInputs(inputs);
-  };
+  const loadProgram = useCallback(
+    (program: string, inputs: INadaInput[]) => {
+      setCode(program);
+      setManualInputs(inputs);
+      setAutoInputs(inputs);
+    },
+    [setCode, setManualInputs, setAutoInputs]
+  );
 
   return (
     <Box height="100vh" display="flex" flexDirection="column" overflow="hidden">

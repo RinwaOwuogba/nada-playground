@@ -50,10 +50,12 @@ const GitHubImporter: React.FC<IGitHubImporterProps> = ({
     } catch (error) {
       toast({
         title: "Import failed",
-        description: "An error occurred while importing the files.",
+        description: "An error occurred while importing the shared playground.",
         status: "error",
         duration: 3000,
         isClosable: true,
+        position: "top",
+        variant: "subtle",
       });
     } finally {
       setIsImporting(false);
@@ -70,6 +72,8 @@ const GitHubImporter: React.FC<IGitHubImporterProps> = ({
         status: "warning",
         duration: 3000,
         isClosable: true,
+        position: "top",
+        variant: "subtle",
       });
     }
   }, [isImporting, onClose, toast]);

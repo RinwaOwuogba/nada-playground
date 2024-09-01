@@ -1,14 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { INadaInput } from "./utils";
 
-export function useManualNadaInput(initialInputs?: INadaInput[]) {
+export function useManualNadaInput() {
   const [inputs, setInputs] = useState<INadaInput[]>([generateDefaultInput()]);
-
-  useEffect(() => {
-    if (initialInputs) {
-      setInputs(initialInputs);
-    }
-  }, [initialInputs]);
 
   const setInputProperty = useCallback(
     (key: string, id: string, value: string) => {

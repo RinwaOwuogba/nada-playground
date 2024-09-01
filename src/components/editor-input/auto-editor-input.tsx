@@ -1,13 +1,16 @@
 import React, { useCallback } from "react";
-import { Table, Thead, Tbody, Tr, Th, Td, Input } from "@chakra-ui/react";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Input,
+  Text,
+  Flex,
+} from "@chakra-ui/react";
 import { INadaInput } from "@/hooks/useNadaInput";
-
-interface IAutoEditorInputProps {
-  inputs: INadaInput[];
-  getInputPropertySetter: (
-    key: string
-  ) => (name: string, value: string) => void;
-}
 
 const AutoEditorInput: React.FC<IAutoEditorInputProps> = ({
   inputs,
@@ -30,21 +33,70 @@ const AutoEditorInput: React.FC<IAutoEditorInputProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {inputs.map((input) => (
-          <Tr key={input.name}>
-            <Td>{input.name}</Td>
-            <Td>{input.type}</Td>
-            <Td>
-              <Input
-                value={input.value}
-                onChange={(e) => setInputValue(input.name, e.target.value)}
-              />
-            </Td>
-          </Tr>
-        ))}
+        {inputs.length === 0 ? (
+          <NoInputsRow colSpan={3} />
+        ) : (
+          inputs.map((input) => (
+            <InputRow
+              key={input.name}
+              input={input}
+              setInputValue={setInputValue}
+            />
+          ))
+        )}
       </Tbody>
     </Table>
   );
 };
+
+const NoInputsRow: React.FC<INoInputsRowProps> = ({ colSpan }) => (
+  <Tr>
+    <Td colSpan={colSpan}>
+      <Flex
+        direction="column"
+        textAlign="center"
+        gap={2}
+        py={4}
+        color="gray.500"
+      >
+        <Text fontSize="md" fontWeight="semibold">
+          No inputs available
+        </Text>
+        <Text fontSize="smaller">
+          Add inputs to the editor to see them here.
+        </Text>
+      </Flex>
+    </Td>
+  </Tr>
+);
+
+const InputRow: React.FC<IInputRowProps> = ({ input, setInputValue }) => (
+  <Tr key={input.name}>
+    <Td>{input.name}</Td>
+    <Td>{input.type}</Td>
+    <Td>
+      <Input
+        value={input.value}
+        onChange={(e) => setInputValue(input.name, e.target.value)}
+      />
+    </Td>
+  </Tr>
+);
+
+interface IAutoEditorInputProps {
+  inputs: INadaInput[];
+  getInputPropertySetter: (
+    key: string
+  ) => (name: string, value: string) => void;
+}
+
+interface INoInputsRowProps {
+  colSpan: number;
+}
+
+interface IInputRowProps {
+  input: INadaInput;
+  setInputValue: (name: string, value: string) => void;
+}
 
 export default AutoEditorInput;

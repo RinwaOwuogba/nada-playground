@@ -29,10 +29,8 @@ describe("ManualEditorInput", () => {
 
   it("renders empty table when no inputs are provided", () => {
     render(<ManualEditorInput {...defaultProps} />);
-    expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(
-      screen.queryByRole("row", { name: /input/i })
-    ).not.toBeInTheDocument();
+    expect(screen.getByText("No inputs available")).toBeInTheDocument();
+    expect(screen.getAllByRole("row")).toHaveLength(2);
   });
 
   it("renders inputs correctly", () => {

@@ -63,33 +63,9 @@ describe("AutoEditorInput", () => {
     });
   });
 
-  // describe("Run button", () => {
-  //   const mockExecuteProgram = jest.fn();
-  //   const defaultProps = {
-  //     code: "",
-  //     inputs: [],
-  //     isProgramExecuting: false,
-  //     getInputPropertySetter: jest.fn(),
-  //     executeProgram: mockExecuteProgram,
-  //   };
-
-  //   test("should be enabled when isProgramExecuting is false", () => {
-  //     render(<AutoEditorInput {...defaultProps} />);
-  //     const runButton = screen.getByRole("button", { name: /run/i });
-  //     expect(runButton).toBeEnabled();
-  //   });
-
-  //   test("should be disabled when isProgramExecuting is true", () => {
-  //     render(<AutoEditorInput {...defaultProps} isProgramExecuting={true} />);
-  //     const runButton = screen.getByRole("button", { name: /run/i });
-  //     expect(runButton).toBeDisabled();
-  //   });
-
-  //   test("should trigger executeProgram function when clicked", () => {
-  //     render(<AutoEditorInput {...defaultProps} />);
-  //     const runButton = screen.getByRole("button", { name: /run/i });
-  //     fireEvent.click(runButton);
-  //     expect(mockExecuteProgram).toHaveBeenCalledTimes(1);
-  //   });
-  // });
+  it("renders empty table when no inputs are provided", () => {
+    render(<AutoEditorInput {...defaultProps} inputs={[]} />);
+    expect(screen.getByText("No inputs available")).toBeInTheDocument();
+    expect(screen.getAllByRole("row")).toHaveLength(2);
+  });
 });

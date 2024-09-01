@@ -3,21 +3,21 @@ import { useAutoNadaInput } from "./useAutoNadaInput";
 import { useManualNadaInput } from "./useManualNadaInput";
 import { INadaInput } from "./utils";
 
-export function useNadaInput({ code, initialInputs }: IUseNadaInputProps) {
+export function useNadaInput(code: string) {
   const [isAutoMode, setIsAutoMode] = useState(true);
 
   const {
     inputs: autoInputs,
     setInputValue: setAutoInputValue,
     setInputs: setAutoInputs,
-  } = useAutoNadaInput(code, initialInputs.auto);
+  } = useAutoNadaInput(code);
   const {
     inputs: manualInputs,
     setInputProperty: setManualInputProperty,
     addInput,
     removeInput,
     setInputs: setManualInputs,
-  } = useManualNadaInput(initialInputs.manual);
+  } = useManualNadaInput();
 
   const inputs = useMemo(
     () => (isAutoMode ? autoInputs : manualInputs),
@@ -54,11 +54,6 @@ export function useNadaInput({ code, initialInputs }: IUseNadaInputProps) {
 }
 
 export type { INadaInput };
-
-interface IUseNadaInputProps {
-  code: string;
-  initialInputs: IInitialInputs;
-}
 
 export interface IInitialInputs {
   auto?: INadaInput[];
