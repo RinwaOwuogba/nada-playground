@@ -7,7 +7,7 @@ describe("useManualNadaInput", () => {
     expect(result.current.inputs).toHaveLength(1);
     expect(result.current.inputs[0]).toHaveProperty("id");
     expect(result.current.inputs[0].name).toBe("");
-    expect(result.current.inputs[0].type).toBe("SecretInteger");
+    expect(result.current.inputs[0].type).toBe("");
     expect(result.current.inputs[0].value).toBe("");
   });
 
@@ -30,7 +30,7 @@ describe("useManualNadaInput", () => {
     expect(result.current.inputs).toHaveLength(2);
     expect(result.current.inputs[1]).toHaveProperty("id");
     expect(result.current.inputs[1].name).toBe("");
-    expect(result.current.inputs[1].type).toBe("SecretInteger");
+    expect(result.current.inputs[1].type).toBe("");
     expect(result.current.inputs[1].value).toBe("");
   });
 

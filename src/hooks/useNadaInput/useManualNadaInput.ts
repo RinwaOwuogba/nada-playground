@@ -34,14 +34,18 @@ export function useManualNadaInput(initialInputs?: INadaInput[]) {
     [setInputs]
   );
 
-  return { inputs, setInputProperty, addInput, removeInput };
+  return { inputs, setInputProperty, addInput, removeInput, setInputs };
 }
 
 const generateDefaultInput = (): INadaInput => {
   return {
-    id: Math.random().toString(36).substring(2, 10),
+    id: generateId(),
     name: "",
-    type: "SecretInteger",
+    type: "",
     value: "",
   };
+};
+
+export const generateId = () => {
+  return Math.random().toString(36).substring(2, 10);
 };

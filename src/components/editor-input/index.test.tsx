@@ -5,6 +5,7 @@ import EditorInput from "./index";
 describe("Run button", () => {
   const mockExecuteProgram = jest.fn();
   const mockToggleMode = jest.fn();
+  const mockAddInput = jest.fn();
   const defaultProps = {
     code: "",
     inputs: [],
@@ -13,6 +14,7 @@ describe("Run button", () => {
     executeProgram: mockExecuteProgram,
     isAutoMode: false,
     toggleMode: mockToggleMode,
+    addInput: mockAddInput,
   };
 
   test("should be enabled when isProgramExecuting is false", () => {
@@ -32,5 +34,14 @@ describe("Run button", () => {
     const runButton = screen.getByRole("button", { name: /Run Program/i });
     fireEvent.click(runButton);
     expect(mockExecuteProgram).toHaveBeenCalledTimes(1);
+  });
+
+  describe("Add input button", () => {
+    test('should call addInput when "Add Input" button is clicked', () => {
+      render(<EditorInput {...defaultProps} />);
+      const addButton = screen.getByRole("button", { name: /add input/i });
+      fireEvent.click(addButton);
+      expect(mockAddInput).toHaveBeenCalledTimes(1);
+    });
   });
 });

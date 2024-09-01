@@ -6,13 +6,17 @@ import { INadaInput } from "./utils";
 export function useNadaInput({ code, initialInputs }: IUseNadaInputProps) {
   const [isAutoMode, setIsAutoMode] = useState(true);
 
-  const { inputs: autoInputs, setInputValue: setAutoInputValue } =
-    useAutoNadaInput(code, initialInputs.auto);
+  const {
+    inputs: autoInputs,
+    setInputValue: setAutoInputValue,
+    setInputs: setAutoInputs,
+  } = useAutoNadaInput(code, initialInputs.auto);
   const {
     inputs: manualInputs,
     setInputProperty: setManualInputProperty,
     addInput,
     removeInput,
+    setInputs: setManualInputs,
   } = useManualNadaInput(initialInputs.manual);
 
   const inputs = useMemo(
@@ -40,6 +44,8 @@ export function useNadaInput({ code, initialInputs }: IUseNadaInputProps) {
     autoInputs,
     manualInputs,
     getInputPropertySetter,
+    setAutoInputs,
+    setManualInputs,
     isAutoMode,
     toggleMode,
     addInput: isAutoMode ? undefined : addInput,

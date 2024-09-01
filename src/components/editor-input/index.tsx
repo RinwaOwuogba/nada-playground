@@ -17,6 +17,10 @@ const EditorInput = ({
   addInput,
   removeInput,
 }: IEditorInputProps) => {
+  const handleRun = () => {
+    executeProgram(inputs, code);
+  };
+
   return (
     <Box>
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
@@ -59,7 +63,7 @@ const EditorInput = ({
           <Button
             size="sm"
             aria-label="Run Program"
-            onClick={() => executeProgram(inputs, code)}
+            onClick={handleRun}
             isLoading={isProgramExecuting}
             loadingText="Executing..."
             leftIcon={<Icon as={VscPlay} />}

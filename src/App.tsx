@@ -4,7 +4,7 @@ import "./App.css";
 import CodeEditor from "./components/code-editor";
 import EditorInput from "./components/editor-input";
 import constants from "./constants";
-import { useNadaInput } from "./hooks/useNadaInput";
+import { INadaInput, useNadaInput } from "./hooks/useNadaInput";
 import EnvironmentLoader from "./components/environment-loader";
 import useExecuteNadaProgram from "./hooks/useExecuteNadaProgram";
 import Header from "./components/header";
@@ -25,6 +25,8 @@ function App() {
     removeInput,
     manualInputs,
     autoInputs,
+    setAutoInputs,
+    setManualInputs,
   } = useNadaInput({ code, initialInputs });
   const { executeProgram, executionResult, isProgramExecuting } =
     useExecuteNadaProgram();
@@ -35,9 +37,20 @@ function App() {
     }
   }, [initialCode]);
 
+  const loadProgram = (program: string, inputs: INadaInput[]) => {
+    setCode(program);
+    setManualInputs(inputs);
+    setAutoInputs(inputs);
+  };
+
   return (
     <Box height="100vh" display="flex" flexDirection="column" overflow="hidden">
-      <Header code={code} manualInputs={manualInputs} autoInputs={autoInputs} />
+      <Header
+        code={code}
+        manualInputs={manualInputs}
+        autoInputs={autoInputs}
+        loadProgram={loadProgram}
+      />
 
       <EnvironmentLoader
         isLoading={isLoading}

@@ -130,44 +130,6 @@ describe("ManualEditorInput", () => {
     expect(screen.getByDisplayValue("100")).toBeInTheDocument();
   });
 
-  it('adds a new input to the table when "Add Input" button is clicked', () => {
-    inputs = [{ id: "1", name: "input1", type: "SecretInteger", value: "42" }];
-    const { rerender } = render(
-      <ManualEditorInput
-        {...defaultProps}
-        inputs={inputs}
-        getInputPropertySetter={getInputPropertySetter}
-      />
-    );
-
-    const addButton = screen.getByRole("button", { name: /add input/i });
-    fireEvent.click(addButton);
-
-    expect(mockAddInput).toHaveBeenCalledTimes(1);
-
-    // Simulate the addition of a new input
-    inputs = [
-      ...inputs,
-      { id: "2", name: "", type: "SecretInteger", value: "" },
-    ];
-    rerender(
-      <ManualEditorInput
-        {...defaultProps}
-        inputs={inputs}
-        getInputPropertySetter={getInputPropertySetter}
-      />
-    );
-
-    // Check if a new row is added to the table
-    const tableRows = screen.getAllByRole("row");
-    expect(tableRows.length).toBe(3); // 1 header row + 2 input rows
-
-    // Check if the new input fields are rendered
-    expect(screen.getAllByPlaceholderText("Input name")).toHaveLength(2);
-    expect(screen.getAllByRole("combobox")).toHaveLength(2);
-    expect(screen.getAllByPlaceholderText("Input value")).toHaveLength(2);
-  });
-
   it('removes an input from the table when the "Remove" button is clicked', () => {
     inputs = [
       { id: "1", name: "input1", type: "SecretInteger", value: "42" },
@@ -224,6 +186,7 @@ describe("ManualEditorInput", () => {
     const options = Array.from(typeSelect.getElementsByTagName("option"));
 
     const expectedTypes = [
+      "", // placeholder option
       "SecretInteger",
       "PublicInteger",
       "Integer",

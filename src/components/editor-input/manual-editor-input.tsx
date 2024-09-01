@@ -57,6 +57,9 @@ const ManualEditorInput: React.FC<IManualEditorInputProps> = ({
                     setInputValue("type", input.id ?? "", e.target.value)
                   }
                 >
+                  <option hidden disabled value="">
+                    Select type
+                  </option>
                   {inputTypes.map((type) => (
                     <option key={type} value={type}>
                       {type}
