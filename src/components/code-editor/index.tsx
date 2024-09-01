@@ -2,10 +2,8 @@ import nadaHighlightExtension from "@/lib/nada-highlight-extension";
 import CodeMirror, { EditorView, Extension } from "@uiw/react-codemirror";
 import { useMemo } from "react";
 import { python } from "@codemirror/lang-python";
-import { Button, Flex, Text } from "@chakra-ui/react";
 
 const CodeEditor = ({
-  label,
   code,
   setCode,
   placeholder,
@@ -19,29 +17,13 @@ const CodeEditor = ({
   );
 
   return (
-    <Flex direction="column">
-      <Flex alignItems="center" justifyContent="space-between">
-        <Text fontWeight="bold" color="gray.400">
-          {label}
-        </Text>
-        <Button
-          size="sm"
-          variant="ghost"
-          colorScheme="blue"
-          alignSelf="flex-end"
-          onClick={() => setCode("")}
-        >
-          Reset
-        </Button>
-      </Flex>
-      <CodeMirror
-        value={code}
-        height="300px"
-        onChange={handleChange}
-        placeholder={placeholder}
-        extensions={completeExtensions}
-      />
-    </Flex>
+    <CodeMirror
+      value={code}
+      height="300px"
+      onChange={handleChange}
+      placeholder={placeholder}
+      extensions={completeExtensions}
+    />
   );
 };
 

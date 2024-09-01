@@ -10,6 +10,7 @@ import useExecuteNadaProgram from "./hooks/useExecuteNadaProgram";
 import Header from "./components/header";
 import useLoadEnvironment from "./hooks/useLoadEnvironment";
 import ExecutionOutput from "./components/execution-output";
+import CodeEditorHeader from "./components/code-editor/code-editor-header";
 
 function App() {
   const [code, setCode] = useState(constants.SAMPLE_CODE);
@@ -51,6 +52,12 @@ function App() {
     [setCode, setManualInputs, setAutoInputs]
   );
 
+  const resetPlayground = useCallback(() => {
+    setCode("");
+    setManualInputs([]);
+    setAutoInputs([]);
+  }, [setCode, setManualInputs, setAutoInputs]);
+
   return (
     <Box height="100vh" display="flex" flexDirection="column" overflow="hidden">
       <Header
@@ -77,6 +84,10 @@ function App() {
           rowGap={4}
         >
           <GridItem area="editor">
+            <CodeEditorHeader
+              resetPlayground={resetPlayground}
+              loadProgram={loadProgram}
+            />
             <CodeEditor
               label="Editor"
               code={code}
