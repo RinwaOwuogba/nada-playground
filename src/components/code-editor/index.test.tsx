@@ -28,6 +28,27 @@ test("allows users type code", async () => {
   expect(screen.getByText("hello world")).toBeTruthy();
 });
 
+test("clears code when reset button is clicked", () => {
+  let code = "initial code";
+  const setCode = jest.fn((newCode: string) => {
+    code = newCode;
+  });
+
+  render(
+    <CodeEditor
+      code={code}
+      setCode={setCode}
+      placeholder={constants.EDITOR_PLACEHOLDER_TEXT}
+    />
+  );
+
+  const resetButton = screen.getByRole("button", { name: /reset/i });
+  fireEvent.click(resetButton);
+
+  expect(setCode).toHaveBeenCalledWith("");
+  expect(code).toBe("");
+});
+
 describe("highlights nada DSL syntax", () => {
   let code;
   const setCode = (newCode: string) => {

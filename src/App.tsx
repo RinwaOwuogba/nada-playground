@@ -77,10 +77,8 @@ function App() {
           rowGap={4}
         >
           <GridItem area="editor">
-            <Text fontWeight={"bold"} color={"gray.400"}>
-              Editor
-            </Text>
             <CodeEditor
+              label="Editor"
               code={code}
               setCode={setCode}
               placeholder={constants.EDITOR_PLACEHOLDER_TEXT}
