@@ -1,7 +1,10 @@
 import nadaHighlightExtension from "@/lib/nada-highlight-extension";
 import CodeMirror, { EditorView, Extension } from "@uiw/react-codemirror";
 import { useMemo } from "react";
-import { python } from "@codemirror/lang-python";
+// import { python } from "@codemirror/lang-python";
+import { StreamLanguage } from "@codemirror/language";
+import { python } from "./python";
+// import { python } from "@codemirror/legacy-modes/mode/python";
 
 const CodeEditor = ({
   code,
@@ -12,7 +15,12 @@ const CodeEditor = ({
   const handleChange = (val: string) => setCode(val);
 
   const completeExtensions = useMemo(
-    () => [python(), ...extensions, EditorView.lineWrapping],
+    () => [
+      StreamLanguage.define(python),
+      ...extensions,
+      EditorView.lineWrapping,
+    ],
+    // () => [python(), ...extensions, EditorView.lineWrapping],
     [extensions]
   );
 

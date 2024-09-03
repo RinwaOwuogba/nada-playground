@@ -29,9 +29,9 @@ def nada_main():
         for i in range(3)
     ]`,
     inputs: [
-      { name: "secret1", value: "10", type: "SecretInteger" },
-      { name: "secret2", value: "20", type: "SecretInteger" },
-      { name: "secret3", value: "30", type: "SecretInteger" },
+      { id: "1", name: "secret1", value: "10", type: "SecretInteger" },
+      { id: "2", name: "secret2", value: "20", type: "SecretInteger" },
+      { id: "3", name: "secret3", value: "30", type: "SecretInteger" },
     ],
   },
   {
@@ -48,8 +48,8 @@ def nada_main():
     sum = num_1 + num_2
     return [Output(sum, "sum", party_charlie)]`,
     inputs: [
-      { name: "num_1", value: "10", type: "SecretInteger" },
-      { name: "num_2", value: "20", type: "SecretInteger" },
+      { id: "1", name: "num_1", value: "10", type: "SecretInteger" },
+      { id: "2", name: "num_2", value: "20", type: "SecretInteger" },
     ],
   },
   {
@@ -72,7 +72,7 @@ def nada_main():
         outputs.append(Output(ascending_list[i], "ascending_list_" + str(i), party_alice))
     
     return outputs`,
-    inputs: [{ name: "start", value: "5", type: "SecretInteger" }],
+    inputs: [{ id: "1", name: "start", value: "5", type: "SecretInteger" }],
   },
 ];
 export default examplePrograms;
