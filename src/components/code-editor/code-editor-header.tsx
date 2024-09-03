@@ -2,8 +2,11 @@ import { Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import ExamplePrograms from "../example-programs";
 import examplePrograms from "@/lib/example-programs";
 import { INadaInput } from "@/hooks/useNadaInput";
+// import StoreProgram from "../store-program";
 
 const CodeEditorHeader = ({
+  // inputs,
+  // code,
   resetPlayground,
   loadProgram,
 }: ICodeEditorHeaderProps) => {
@@ -12,6 +15,11 @@ const CodeEditorHeader = ({
     onOpen: openExamplePrograms,
     onClose: closeExamplePrograms,
   } = useDisclosure();
+  // const {
+  //   isOpen: isStoreProgramOpen,
+  //   onOpen: openStoreProgram,
+  //   onClose: closeStoreProgram,
+  // } = useDisclosure();
 
   return (
     <>
@@ -21,11 +29,18 @@ const CodeEditorHeader = ({
         </Text>
 
         <Flex gap={2} alignItems="center">
+          {/* <Button
+            size="sm"
+            variant="ghost"
+            colorScheme="blue"
+            onClick={openStoreProgram}
+          >
+            Store Program
+          </Button> */}
           <Button
             size="sm"
             variant="ghost"
             colorScheme="blue"
-            alignSelf="flex-end"
             onClick={openExamplePrograms}
           >
             View Examples
@@ -34,7 +49,6 @@ const CodeEditorHeader = ({
             size="sm"
             variant="ghost"
             colorScheme="blue"
-            alignSelf="flex-end"
             onClick={resetPlayground}
           >
             Reset
@@ -48,6 +62,12 @@ const CodeEditorHeader = ({
         examples={examplePrograms}
         loadProgram={loadProgram}
       />
+      {/* <StoreProgram
+        isOpen={isStoreProgramOpen}
+        onClose={closeStoreProgram}
+        inputs={inputs}
+        code={code}
+      /> */}
     </>
   );
 };
@@ -55,6 +75,8 @@ const CodeEditorHeader = ({
 interface ICodeEditorHeaderProps {
   resetPlayground: () => void;
   loadProgram: (code: string, inputs: INadaInput[]) => void;
+  inputs: INadaInput[];
+  code: string;
 }
 
 export default CodeEditorHeader;

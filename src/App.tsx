@@ -41,7 +41,13 @@ function App() {
     if (initialInputs.manual) setManualInputs(initialInputs.manual);
 
     if (initialInputs.auto) setAutoInputs(initialInputs.auto);
-  }, [initialCode]);
+  }, [
+    initialCode,
+    initialInputs.auto,
+    initialInputs.manual,
+    setAutoInputs,
+    setManualInputs,
+  ]);
 
   const loadProgram = useCallback(
     (program: string, inputs: INadaInput[]) => {
@@ -85,6 +91,8 @@ function App() {
         >
           <GridItem area="editor">
             <CodeEditorHeader
+              inputs={inputs}
+              code={code}
               resetPlayground={resetPlayground}
               loadProgram={loadProgram}
             />

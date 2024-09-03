@@ -1,15 +1,15 @@
 import { loadPyodide, PyodideInterface } from "pyodide";
-import init, { run } from "./nada-run.js";
+import init, { program_to_bin, run } from "./nada-run.js";
 import { INadaInput } from "@/hooks/useNadaInput/index.js";
 import { IExecutionResult } from "@/components/execution-output/index.js";
 
 let pyodide: PyodideInterface;
 let pyodideReadyPromise: Promise<PyodideInterface>;
 
-export const executeNadaCode = async (
+export const compileProgram = async (
   inputs: INadaInput[],
   code: string
-): Promise<IExecutionResult[]> => {
+): Promise<{ public_vars: string; secrets: string; program_json: string }> => {
   await loadPythonEnvironment();
 
   const publicInputs: { [key: string]: PublicInput } = {};
@@ -52,6 +52,18 @@ export const executeNadaCode = async (
     code + "\n" + "nada_compile(nada_main())"
   );
 
+  return { public_vars, secrets, program_json };
+};
+
+export const executeNadaCode = async (
+  inputs: INadaInput[],
+  code: string
+): Promise<IExecutionResult[]> => {
+  const { public_vars, secrets, program_json } = await compileProgram(
+    inputs,
+    code
+  );
+
   // Run the program using the simulator
   const program_output = await runProgramSimulator(
     program_json,
@@ -66,6 +78,15 @@ export const executeNadaCode = async (
       value: value?.toString() ?? "",
     };
   });
+};
+
+export const compileProgramBinary = async (
+  inputs: INadaInput[],
+  code: string
+): Promise<Uint8Array> => {
+  const { program_json } = await compileProgram(inputs, code);
+
+  return program_to_bin(program_json);
 };
 
 export const loadPythonEnvironment = async () => {
