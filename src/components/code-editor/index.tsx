@@ -3,8 +3,12 @@ import CodeMirror, { EditorView, Extension } from "@uiw/react-codemirror";
 import { useMemo } from "react";
 // import { python } from "@codemirror/lang-python";
 import { StreamLanguage } from "@codemirror/language";
-import { python } from "./python";
+import {
+  nadaPython,
+  // python
+} from "./python";
 // import { python } from "@codemirror/legacy-modes/mode/python";
+import { githubLight } from "@uiw/codemirror-theme-github";
 
 const CodeEditor = ({
   code,
@@ -16,12 +20,14 @@ const CodeEditor = ({
 
   const completeExtensions = useMemo(
     () => [
-      StreamLanguage.define(python),
-      ...extensions,
+      // python
+      StreamLanguage.define(nadaPython),
+      // StreamLanguage.define(python),
+      // ...extensions,
       EditorView.lineWrapping,
     ],
     // () => [python(), ...extensions, EditorView.lineWrapping],
-    [extensions]
+    [extensions, nadaPython]
   );
 
   return (
@@ -31,6 +37,7 @@ const CodeEditor = ({
       onChange={handleChange}
       placeholder={placeholder}
       extensions={completeExtensions}
+      theme={githubLight}
     />
   );
 };

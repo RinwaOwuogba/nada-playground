@@ -31,14 +31,14 @@ export const compileProgram = async (
       throw new Error("Input value must be a number.");
     }
 
-    if (input.type === "PublicInteger") {
+    if (input.type.startsWith("Public")) {
       publicInputs[input.name] = {
-        type: "PublicInteger",
+        type: input.type,
         value: numericValue.toString(),
       };
-    } else if (input.type === "SecretInteger") {
+    } else if (input.type.startsWith("Secret")) {
       secretInputs[input.name] = {
-        type: "SecretInteger",
+        type: input.type,
         value: numericValue.toString(),
       };
     }
@@ -124,12 +124,12 @@ const runProgramSimulator = async (
 };
 
 interface PublicInput {
-  type: "PublicInteger";
+  type: string;
   value: string;
 }
 
 interface SecretInput {
-  type: "SecretInteger";
+  type: string;
   value: string;
 }
 

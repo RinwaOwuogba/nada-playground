@@ -1,3 +1,5 @@
+import { tags as t } from "@lezer/highlight";
+
 function wordRegexp(words) {
   return new RegExp("^((" + words.join(")|(") + "))\\b");
 }
@@ -186,6 +188,15 @@ export function mkPython(parserConf) {
   var keywords = wordRegexp(myKeywords);
   var builtins = wordRegexp(myBuiltins);
 
+  var langExtension = parserConf.langExtension || [];
+  var tokenTable = {};
+  var typeMap = new Map();
+
+  langExtension.forEach(({ types, tokenName, highlightTag }) => {
+    tokenTable[tokenName] = highlightTag;
+    typeMap.set(tokenName, new Set(types));
+  });
+
   // tokenizers
   function tokenBase(stream, state) {
     var sol = stream.sol() && state.lastToken != "\\";
@@ -209,6 +220,7 @@ export function mkPython(parserConf) {
         return style;
       }
     }
+
     return tokenBaseInner(stream, state);
   }
 
@@ -286,7 +298,18 @@ export function mkPython(parserConf) {
     if (stream.match(/^(self|cls)\b/)) return "self";
 
     if (stream.match(identifiers)) {
+      var current = stream.current();
       if (state.lastToken == "def" || state.lastToken == "class") return "def";
+
+      for (let [tokenName, typeSet] of typeMap) {
+        if (typeSet.has(current)) {
+          console.log("================");
+          console.log("tokenName", tokenName);
+          console.log("current", current);
+          return tokenName;
+        }
+      }
+
       return "variable";
     }
 
@@ -474,6 +497,10 @@ export function mkPython(parserConf) {
     )
       state.scopes.pop();
 
+    if (style == "punctuation" && current == "=") {
+      state.lastToken = "=";
+    }
+
     return style;
   }
 
@@ -486,6 +513,7 @@ export function mkPython(parserConf) {
         scopes: [{ offset: 0, type: "py", align: null }],
         indent: 0,
         lastToken: null,
+        lastSeenConstructor: null,
         lambda: false,
         dedent: 0,
       };
@@ -529,6 +557,8 @@ export function mkPython(parserConf) {
       commentTokens: { line: "#" },
       closeBrackets: { brackets: ["(", "[", "{", "'", '"', "'''", '"""'] },
     },
+
+    tokenTable: tokenTable || {},
   };
 }
 
@@ -545,3 +575,39 @@ export const cython = mkPython({
       "readonly struct union DEF IF ELIF ELSE"
   ),
 });
+
+export const nadaPython = mkPython({
+  langExtension: [
+    {
+      types: ["SecretInteger", "SecretUnsignedInteger", "SecretBoolean"],
+      tokenName: "nada-secret-constructor",
+      highlightTag: t.keyword,
+    },
+    {
+      types: ["PublicInteger", "PublicUnsignedInteger", "PublicBoolean"],
+      tokenName: "nada-public-constructor",
+      highlightTag: t.keyword,
+    },
+    {
+      types: ["Input"],
+      tokenName: "nada-input-function",
+      highlightTag: t.standard,
+    },
+    {
+      types: ["Integer", "Float", "Boolean"],
+      tokenName: "nada-literal-constructor",
+      highlightTag: t.variableName,
+    },
+  ],
+});
+
+// // Look ahead for assignment to a Nada constructor
+// if (
+//   // peek === "=" &&
+//   stream.match(
+//     /\s*=\s*(?:SecretInteger|SecretFloat|SecretBoolean)/,
+//     false
+//   )
+// ) {
+//   return "nada-variable";
+// }

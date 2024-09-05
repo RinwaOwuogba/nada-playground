@@ -1,9 +1,10 @@
 /* Operators */
-.cc-nada-operator {
+/* .cc-nada-operator {
   color: #ff5733;
-}
+} */
 
 /* Data Types */
+/* 
 .cc-nada-SecretInteger,
 .cc-nada-PublicInteger,
 .cc-nada-Integer,
@@ -18,10 +19,7 @@
   color: #3498db;
 }
 
-/* Functions */
-.cc-nada-function {
-  color: #9b59b6;
-}
+*/
 
 .code,
 .cm-line {

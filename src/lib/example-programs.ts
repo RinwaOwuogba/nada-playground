@@ -75,4 +75,5 @@ def nada_main():
     inputs: [{ id: "1", name: "start", value: "5", type: "SecretInteger" }],
   },
 ];
+
 export default examplePrograms;
