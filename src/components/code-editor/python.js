@@ -303,9 +303,6 @@ export function mkPython(parserConf) {
 
       for (let [tokenName, typeSet] of typeMap) {
         if (typeSet.has(current)) {
-          console.log("================");
-          console.log("tokenName", tokenName);
-          console.log("current", current);
           return tokenName;
         }
       }
@@ -552,13 +549,14 @@ export function mkPython(parserConf) {
     languageData: {
       autocomplete: commonKeywords
         .concat(commonBuiltins)
+        .concat(langExtension.reduce((acc, { types }) => acc.concat(types), []))
         .concat(["exec", "print"]),
       indentOnInput: /^\s*([\}\]\)]|else:|elif |except |finally:)$/,
       commentTokens: { line: "#" },
       closeBrackets: { brackets: ["(", "[", "{", "'", '"', "'''", '"""'] },
     },
 
-    tokenTable: tokenTable || {},
+    tokenTable: tokenTable,
   };
 }
 
@@ -591,10 +589,10 @@ export const nadaPython = mkPython({
     {
       types: ["Input"],
       tokenName: "nada-input-function",
-      highlightTag: t.standard,
+      highlightTag: t.strikethrough,
     },
     {
-      types: ["Integer", "Float", "Boolean"],
+      types: ["Integer", "UnsignedInteger`", "Boolean"],
       tokenName: "nada-literal-constructor",
       highlightTag: t.variableName,
     },

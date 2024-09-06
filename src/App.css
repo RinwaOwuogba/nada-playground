@@ -1,27 +1,36 @@
 /* Operators */
-/* .cc-nada-operator {
+.cc-nada-operator {
   color: #ff5733;
-} */
+}
 
 /* Data Types */
-/* 
-.cc-nada-SecretInteger,
-.cc-nada-PublicInteger,
-.cc-nada-Integer,
-.cc-nada-SecretUnsignedInteger,
-.cc-nada-PublicUnsignedInteger,
-.cc-nada-UnsignedInteger,
-.cc-nada-SecretBoolean,
-.cc-nada-PublicBoolean,
-.cc-nada-Boolean,
-.cc-nada-Output,
-.cc-nada-Party {
+.cc-nada-secret-constructor {
+  color: #005cc5;
+}
+
+.cc-nada-public-constructor {
+  color: #22863a;
+}
+
+.cc-nada-party-constructor {
+  color: #6f42c1;
+}
+
+.cc-nada-misc-constructor {
+  color: #bc8e1d;
+}
+
+.cc-nada-literal-constructor,
+.cc-nada-special-function {
   color: #3498db;
 }
 
-*/
+/* Functions */
+.cc-nada-function {
+  color: #9b59b6;
+}
 
-.code,
+*/ .code,
 .cm-line {
   font-family: "Fira Code Variable", monospace !important;
   font-size: 14px;

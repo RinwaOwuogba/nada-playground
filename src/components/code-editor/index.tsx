@@ -1,14 +1,10 @@
 import nadaHighlightExtension from "@/lib/nada-highlight-extension";
 import CodeMirror, { EditorView, Extension } from "@uiw/react-codemirror";
 import { useMemo } from "react";
-// import { python } from "@codemirror/lang-python";
-import { StreamLanguage } from "@codemirror/language";
-import {
-  nadaPython,
-  // python
-} from "./python";
-// import { python } from "@codemirror/legacy-modes/mode/python";
+import { python } from "@codemirror/lang-python";
 import { githubLight } from "@uiw/codemirror-theme-github";
+import { lintGutter } from "@codemirror/lint";
+import nadaLinter from "@/lib/nada-linter";
 
 const CodeEditor = ({
   code,
@@ -20,14 +16,13 @@ const CodeEditor = ({
 
   const completeExtensions = useMemo(
     () => [
-      // python
-      StreamLanguage.define(nadaPython),
-      // StreamLanguage.define(python),
-      // ...extensions,
+      ...extensions,
+      python(),
+      nadaLinter,
+      lintGutter(),
       EditorView.lineWrapping,
     ],
-    // () => [python(), ...extensions, EditorView.lineWrapping],
-    [extensions, nadaPython]
+    [extensions]
   );
 
   return (
@@ -37,7 +32,7 @@ const CodeEditor = ({
       onChange={handleChange}
       placeholder={placeholder}
       extensions={completeExtensions}
-      theme={githubLight}
+      // theme={githubLight}
     />
   );
 };

@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -9,7 +9,7 @@ export default defineConfig({
       name: "ignore-worker-dynamic-import",
       enforce: "pre",
       transform(code) {
-        // HACK: bypass static worker options
+        // HACK: bypass static worker options. Need for nillion-client
         // Ex: Internal server error: Vite is unable to parse the worker options as the value is not static.
         // To ignore this error, please use /* @vite-ignore */ in the worker options.
         // Plugin: vite:worker-import-meta-url
@@ -26,6 +26,9 @@ export default defineConfig({
     react(),
     tsconfigPaths(),
   ],
+  // optimizeDeps: {
+  //   exclude: ["@astral-sh/ruff-wasm-web"],
+  // },
   server: {
     headers: {
       "Cross-Origin-Embedder-Policy": "require-corp",

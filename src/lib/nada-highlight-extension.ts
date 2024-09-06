@@ -1,119 +1,114 @@
-import { Range, StateEffect, StateField, Text } from "@codemirror/state";
+import { syntaxTree } from "@codemirror/language";
+import { EditorState, Range, StateEffect, StateField } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { Decoration } from "@uiw/react-codemirror";
 
 const highlightEffect = StateEffect.define<Range<Decoration>[]>();
 
 const applyHighlights = (
-  doc: Text,
-  marks: Record<string, Decoration>,
-  patterns: Record<string, string>
+  view: EditorState,
+  marks: Record<string, Decoration>
 ) => {
-  let decorations = [];
-  let bufferStart = 0;
+  const decorations: Range<Decoration>[] = [];
+  const varMap: Record<string, string> = {};
 
-  // Iterate through the document to find matches for the specified patterns
-  const iterator = doc.iterRange(0, doc.length);
-  let iteratorNext;
+  syntaxTree(view)
+    .cursor()
+    .iterate((node) => {
+      // track constructor type
+      if (node.name === "CallExpression") {
+        const nodeText = view.sliceDoc(node.from, node.to);
 
-  while (!iteratorNext || !iteratorNext.done) {
-    iteratorNext = iterator.next();
-    const line = iteratorNext.value;
-
-    // Track the buffer position for the current line
-    const bufferPos = bufferStart;
-    bufferStart += line.length;
-
-    // Check if the current line matches any of the specified patterns
-    for (const [pattern, identifier] of Object.entries(patterns)) {
-      let matchIndex = line.indexOf(pattern);
-      while (matchIndex !== -1) {
-        // Calculate the absolute `from` and `to` positions in the document
-        const from = bufferPos + matchIndex;
-        const to = from + pattern.length;
-
-        // Ensure that the pattern is not part of a larger word by checking surrounding characters
-        const isStartBoundary =
-          matchIndex === 0 || !/\w/.test(line[matchIndex - 1]);
-        const isEndBoundary =
-          to >= bufferPos + line.length ||
-          !/\w/.test(line[matchIndex + pattern.length]);
-
-        if (isStartBoundary && isEndBoundary) {
-          // Retrieve the corresponding decorator mark using the identifier
-          const mark = marks[identifier];
-          if (mark) {
-            // Create a highlight decoration range and add it to the list
-            decorations.push(mark.range(from, to));
+        for (const [groupName, constructors] of Object.entries(patternGroups)) {
+          const constructorText = nodeText.split("(")[0].trim();
+          if (constructors.has(constructorText)) {
+            const mark = marks[groupName];
+            if (mark) {
+              decorations.push(
+                mark.range(node.from, node.from + constructorText.length)
+              );
+            }
+            break;
           }
         }
-
-        // Look for the next match within the same line
-        matchIndex = line.indexOf(pattern, matchIndex + 1);
       }
-    }
-  }
 
-  // Return a Decoration set containing all the added decorations
+      // track variable type
+      if (node.name == "AssignStatement") {
+        const nodeText = view.sliceDoc(node.from, node.to);
+
+        const assignmentParts = nodeText.split("=").map((part) => part.trim());
+        const leftSide = assignmentParts[0];
+        const rightSide = assignmentParts[1];
+        const rightSideTrimmed = rightSide.split("(")[0].trim();
+
+        // Remove the variable from nadaVars if it's being reassigneds
+        if (varMap[leftSide]) {
+          delete varMap[leftSide];
+        }
+
+        const constructorsWithTrackedVariables = new Set([
+          "secretConstructors",
+          "publicConstructors",
+          "miscConstructors",
+          "partyConstructors",
+        ]);
+        for (const [groupName, constructors] of Object.entries(patternGroups)) {
+          if (!constructorsWithTrackedVariables.has(groupName)) continue;
+
+          if (constructors.has(rightSideTrimmed)) {
+            varMap[leftSide] = groupName;
+            break;
+          }
+        }
+      }
+
+      // TODO: Add more highlighting rules
+
+      // apply variable type
+      if (node.name === "VariableName") {
+        const nodeText = view.sliceDoc(node.from, node.to);
+        if (varMap[nodeText]) {
+          const mark = marks[varMap[nodeText]];
+          if (mark) {
+            decorations.push(mark.range(node.from, node.to));
+          }
+        }
+      }
+
+      return true;
+    });
+
   return highlightEffect.of(decorations);
 };
 
 export const defaultMarks = {
-  SecretInteger: Decoration.mark({ class: "cc-nada-SecretInteger" }),
-  PublicInteger: Decoration.mark({ class: "cc-nada-PublicInteger" }),
-  Integer: Decoration.mark({ class: "cc-nada-Integer" }),
-  SecretUnsignedInteger: Decoration.mark({
-    class: "cc-nada-SecretUnsignedInteger",
+  secretConstructors: Decoration.mark({ class: "cc-nada-secret-constructor" }),
+  publicConstructors: Decoration.mark({ class: "cc-nada-public-constructor" }),
+  literalConstructors: Decoration.mark({
+    class: "cc-nada-literal-constructor",
   }),
-  PublicUnsignedInteger: Decoration.mark({
-    class: "cc-nada-PublicUnsignedInteger",
+  miscConstructors: Decoration.mark({
+    class: "cc-nada-misc-constructor",
   }),
-  UnsignedInteger: Decoration.mark({ class: "cc-nada-UnsignedInteger" }),
-  SecretBoolean: Decoration.mark({ class: "cc-nada-SecretBoolean" }),
-  PublicBoolean: Decoration.mark({ class: "cc-nada-PublicBoolean" }),
-  Boolean: Decoration.mark({ class: "cc-nada-Boolean" }),
-  Party: Decoration.mark({ class: "cc-nada-Party" }),
-  Output: Decoration.mark({ class: "cc-nada-Output" }),
-  function: Decoration.mark({ class: "cc-nada-function" }),
+  partyConstructors: Decoration.mark({
+    class: "cc-nada-party-constructor",
+  }),
+  specialFunctions: Decoration.mark({ class: "cc-nada-special-function" }),
 };
 
-export const defaultPatterns = {
-  SecretInteger: "SecretInteger",
-  PublicInteger: "PublicInteger",
-  Integer: "Integer",
-  SecretUnsignedInteger: "SecretUnsignedInteger",
-  PublicUnsignedInteger: "PublicUnsignedInteger",
-  UnsignedInteger: "UnsignedInteger",
-  SecretBoolean: "SecretBoolean",
-  PublicBoolean: "PublicBoolean",
-  Boolean: "Boolean",
-  Party: "Party",
-  Output: "Output",
-  trunc_pr: "function",
-  if_else: "function",
-  reveal: "function",
-  public_equals: "function",
-};
-
-const nadaHighlightExtension = (
-  marks: NadaMarks = defaultMarks,
-  patterns: NadaPatterns = defaultPatterns
-) => {
+const nadaHighlightExtension = (marks: NadaMarks = defaultMarks) => {
   return StateField.define({
     create(state) {
       const base = Decoration.set([]);
-      const newDecorations = applyHighlights(state.doc, marks, patterns);
+      const newDecorations = applyHighlights(state, marks);
 
       return base.update({ add: newDecorations.value, sort: true });
     },
     update(value, transaction) {
       if (transaction.docChanged) {
-        let newValue = value.map(transaction.changes);
-        const newDecorations = applyHighlights(
-          transaction.newDoc,
-          marks,
-          patterns
-        );
+        const newValue = value.map(transaction.changes);
+        const newDecorations = applyHighlights(transaction.state, marks);
 
         return newValue.update({ add: newDecorations.value, sort: true });
       }
@@ -124,7 +119,31 @@ const nadaHighlightExtension = (
   });
 };
 
-type NadaMarks = Record<string, Decoration>;
-type NadaPatterns = Record<string, string>;
+interface INadaMarks {
+  [key: string]: Decoration;
+}
+
+type NadaMarks = INadaMarks;
+
+interface IPatternGroups {
+  [key: string]: Set<string>;
+}
+
+const patternGroups: IPatternGroups = {
+  secretConstructors: new Set([
+    "SecretInteger",
+    "SecretUnsignedInteger",
+    "SecretBoolean",
+  ]),
+  publicConstructors: new Set([
+    "PublicInteger",
+    "PublicUnsignedInteger",
+    "PublicBoolean",
+  ]),
+  literalConstructors: new Set(["Integer", "UnsignedInteger", "Boolean"]),
+  partyConstructors: new Set(["Party"]),
+  miscConstructors: new Set(["Input", "Output"]),
+  specialFunctions: new Set(["trunc_pr", "if_else", "reveal", "public_equals"]),
+};
 
 export default nadaHighlightExtension;
