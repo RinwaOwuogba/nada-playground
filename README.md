@@ -10,7 +10,7 @@ Live demo here - [Nada Playground](https://nada-playground.netlify.app/)
 
 ## Features
 
-- **Nada Code Editor**: Write and edit Nada programs with syntax highlighting.
+- **Nada Code Editor**: Write and edit Nada programs with syntax highlighting and autocompletion.
 - **Input Management**: Add and configure inputs for your Nada programs.
 - **Output Display**: View the results of your Nada program executions.
 - **Program Execution**: Compile and run Nada programs directly in the browser.
