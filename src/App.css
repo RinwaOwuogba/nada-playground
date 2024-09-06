@@ -1,9 +1,10 @@
 /* Operators */
-.cc-nada-operator {
+/* .cc-nada-operator {
   color: #ff5733;
-}
+} */
 
 /* Data Types */
+.cc-nada-special-function,
 .cc-nada-secret-constructor {
   color: #005cc5;
 }
@@ -20,17 +21,11 @@
   color: #bc8e1d;
 }
 
-.cc-nada-literal-constructor,
-.cc-nada-special-function {
+.cc-nada-literal-constructor {
   color: #3498db;
 }
 
-/* Functions */
-.cc-nada-function {
-  color: #9b59b6;
-}
-
-*/ .code,
+.code,
 .cm-line {
   font-family: "Fira Code Variable", monospace !important;
   font-size: 14px;
