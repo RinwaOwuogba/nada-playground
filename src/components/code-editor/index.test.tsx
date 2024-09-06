@@ -3,9 +3,7 @@ import "@testing-library/jest-dom";
 import constants from "@/constants";
 
 import CodeEditor from "./index";
-import nadaHighlightExtension, {
-  defaultPatterns,
-} from "@/lib/nada-highlight-extension";
+import nadaHighlightExtension from "@/lib/nada-highlight-extension";
 import { Decoration } from "@codemirror/view";
 
 test("allows users type code", async () => {
@@ -42,22 +40,16 @@ describe("highlights nada DSL syntax", () => {
   const functionAttributes = { style: `color: ${functionColor};` };
 
   const testMarks = {
-    SecretInteger: Decoration.mark({ attributes: datatypeAttributes }),
-    PublicInteger: Decoration.mark({ attributes: datatypeAttributes }),
-    Integer: Decoration.mark({ attributes: datatypeAttributes }),
-    SecretUnsignedInteger: Decoration.mark({ attributes: datatypeAttributes }),
-    PublicUnsignedInteger: Decoration.mark({ attributes: datatypeAttributes }),
-    UnsignedInteger: Decoration.mark({ attributes: datatypeAttributes }),
-    SecretBoolean: Decoration.mark({ attributes: datatypeAttributes }),
-    PublicBoolean: Decoration.mark({ attributes: datatypeAttributes }),
-    Boolean: Decoration.mark({ attributes: datatypeAttributes }),
-    Party: Decoration.mark({ attributes: datatypeAttributes }),
-    Output: Decoration.mark({ attributes: datatypeAttributes }),
-    function: Decoration.mark({ attributes: functionAttributes }),
+    secretConstructors: Decoration.mark({ attributes: datatypeAttributes }),
+    publicConstructors: Decoration.mark({ attributes: datatypeAttributes }),
+    literalConstructors: Decoration.mark({ attributes: datatypeAttributes }),
+    miscConstructors: Decoration.mark({ attributes: datatypeAttributes }),
+    partyConstructors: Decoration.mark({ attributes: datatypeAttributes }),
+    specialFunctions: Decoration.mark({ attributes: functionAttributes }),
   };
 
   const higherOrderNadaHighlight = () => {
-    return nadaHighlightExtension(testMarks, defaultPatterns);
+    return nadaHighlightExtension(testMarks);
   };
 
   const renderEditorWithCode = (code: string) => {

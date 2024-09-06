@@ -5,8 +5,6 @@ import { INadaInput } from "@/hooks/useNadaInput";
 // import StoreProgram from "../store-program";
 
 const CodeEditorHeader = ({
-  // inputs,
-  // code,
   resetPlayground,
   loadProgram,
 }: ICodeEditorHeaderProps) => {
@@ -75,8 +73,6 @@ const CodeEditorHeader = ({
 interface ICodeEditorHeaderProps {
   resetPlayground: () => void;
   loadProgram: (code: string, inputs: INadaInput[]) => void;
-  inputs: INadaInput[];
-  code: string;
 }
 
 export default CodeEditorHeader;

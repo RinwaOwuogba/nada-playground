@@ -15,7 +15,7 @@ const applyHighlights = (
   syntaxTree(view)
     .cursor()
     .iterate((node) => {
-      // track constructor type
+      // track constructor type e.g SecretInteger, PublicInteger, Integer, etc.
       if (node.name === "CallExpression") {
         const nodeText = view.sliceDoc(node.from, node.to);
 
@@ -33,7 +33,33 @@ const applyHighlights = (
         }
       }
 
-      // track variable type
+      // track membership type e.g trunc_pr, reveal, public_equals
+      if (node.name === "MemberExpression") {
+        const nodeText = view.sliceDoc(node.from, node.to);
+
+        for (const [groupName, constructors] of Object.entries(patternGroups)) {
+          // Find the start index of the method name
+          const dotIndex = nodeText.indexOf(".");
+
+          // Extract the method name after '.'
+          const methodName = nodeText.substring(dotIndex + 1).trim();
+
+          if (constructors.has(methodName)) {
+            const mark = marks[groupName];
+            if (mark) {
+              decorations.push(
+                mark.range(
+                  node.from + dotIndex + 1,
+                  node.from + dotIndex + 1 + methodName.length
+                )
+              );
+            }
+            break;
+          }
+        }
+      }
+
+      // track variable type e.g x = SecretInteger() etc;
       if (node.name == "AssignStatement") {
         const nodeText = view.sliceDoc(node.from, node.to);
 
