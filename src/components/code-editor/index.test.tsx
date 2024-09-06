@@ -83,8 +83,10 @@ def nada_main():
     return [output_value]
   `;
 
-  test("highlights Nada data types", () => {
+  test("highlights Nada data types", async () => {
     renderEditorWithCode(testSnippet);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     expect(screen.getByText("SecretInteger")).toHaveStyle({
       color: datatypeColor,

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { IInitialInputs } from "../useNadaInput";
 import { decodeProgramParamsFromURI } from "@/lib/code-sharing";
 import { useToast } from "@chakra-ui/react";
+import { extractNadaInputs } from "../useNadaInput/useAutoNadaInput";
 
 const useLoadEnvironment = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,6 +24,12 @@ const useLoadEnvironment = () => {
         if (shareParam) {
           setIntermediateMessage("Loading shared program...");
           const decoded = decodeProgramParamsFromURI(shareParam);
+
+          // Ensure the inputs type are provided in the auto input
+          // fields
+          decoded.inputs.auto = decoded.inputs.auto
+            ? extractNadaInputs(decoded.code, decoded.inputs.auto)
+            : decoded.inputs.auto;
           setInitialCode(decoded.code);
           setInitialInputs(decoded.inputs);
 

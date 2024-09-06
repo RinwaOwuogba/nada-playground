@@ -19,7 +19,7 @@ export function useAutoNadaInput(code: string) {
   return { inputs, setInputs, setInputValue };
 }
 
-function extractNadaInputs(
+export function extractNadaInputs(
   code: string,
   existingInputs: INadaInput[]
 ): INadaInput[] {
