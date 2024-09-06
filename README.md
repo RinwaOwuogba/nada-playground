@@ -1,50 +1,41 @@
-# React + TypeScript + Vite
+# Nada Playground
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+Nada Playground is an interactive web application designed for developers to write, run, and share Nada code. This open-source project provides a user-friendly environment for learning and experimenting with Nada programming.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live Demo
 
-## Expanding the ESLint configuration
+Live demo here - [Nada Playground](https://nada-playground.netlify.app/)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
 
-- Configure the top-level `parserOptions` property like this:
+- **Nada Code Editor**: Write and edit Nada programs with syntax highlighting.
+- **Input Management**: Add and configure inputs for your Nada programs.
+- **Output Display**: View the results of your Nada program executions.
+- **Program Execution**: Compile and run Nada programs directly in the browser.
+- **Share Functionality**: Share your Nada programs with others via custom links.
+- **GitHub Integration**: Load Nada programs and inputs directly from GitHub repositories.
+- **Example Programs**: Explore pre-loaded Nada examples to learn from.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## How to Use
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+1. **Write Code**: Use the code editor to write your Nada program.
+2. **Configure Inputs**: Add inputs required for your program, specifying name, type, and value.
+3. **Run Program**: Click the "Run" button to compile and execute your Nada code.
+4. **View Outputs**: See the results of your program in the Outputs section.
+5. **Share**: Use the share functionality to generate a link to your Nada program.
+6. **Explore Examples**: Try out pre-loaded example programs to learn Nada programming concepts.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Technical Details
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- Built with [React](https://reactjs.org/) + [Vite](https://vitejs.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [CodeMirror](https://codemirror.net/) for the code editor
+- [Chakra UI](https://chakra-ui.com/) for the UI components
+- Unit tests with [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- Compiles the Nada program using the [jsnadac script](https://github.com/NillionNetwork/nada-sandbox/blob/gh-pages/jsnadac.html)
+- Executes compiled programs using the [nada_run script](https://github.com/NillionNetwork/nada-sandbox/blob/gh-pages/nada_run.js)
+
+## Todo
+
+- **Nillion Testnet Integration**: Store your Nada programs on the Nillion Testnet.
