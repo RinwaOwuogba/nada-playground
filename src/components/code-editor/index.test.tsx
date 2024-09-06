@@ -28,9 +28,9 @@ test("allows users type code", async () => {
 });
 
 describe("highlights nada DSL syntax", () => {
-  let code;
-  const setCode = (newCode: string) => {
-    code = newCode;
+  // let code;
+  const setCode = () => {
+    // code = newCode;
   };
 
   const datatypeColor = "#3498db";

@@ -11,17 +11,17 @@ const publicConstructors = new Set([
   "PublicUnsignedInteger",
   "PublicBoolean",
 ]);
-const literalConstructors = new Set(["Integer", "UnsignedInteger", "Boolean"]);
-const inputFunction = new Set(["Input"]);
+// const literalConstructors = new Set(["Integer", "UnsignedInteger", "Boolean"]);
+// const inputFunction = new Set(["Input"]);
 const nonLiteralConstructors = new Set([
   ...secretConstructors,
   ...publicConstructors,
 ]);
-const allConstructors = new Set([
-  ...secretConstructors,
-  ...publicConstructors,
-  ...literalConstructors,
-]);
+// const allConstructors = new Set([
+//   ...secretConstructors,
+//   ...publicConstructors,
+//   ...literalConstructors,
+// ]);
 
 export const getCallExpressionName = (nodeText: string) => {
   return nodeText.split("(")[0].trim();
