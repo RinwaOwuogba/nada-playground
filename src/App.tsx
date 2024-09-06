@@ -12,6 +12,17 @@ import useLoadEnvironment from "./hooks/useLoadEnvironment";
 import ExecutionOutput from "./components/execution-output";
 import CodeEditorHeader from "./components/code-editor/code-editor-header";
 
+const gridTemplateAreasLarge = `
+  "editor output"
+  "input ."
+`;
+
+const gridTemplateAreasSmall = `
+  "editor"
+  "input"
+  "output"
+`;
+
 function App() {
   const [code, setCode] = useState(constants.SAMPLE_CODE);
 
@@ -80,19 +91,21 @@ function App() {
       >
         <Grid
           padding={5}
-          templateAreas={`
-          "editor output"
-          "input ."
-        `}
+          templateAreas={[
+            gridTemplateAreasSmall,
+            gridTemplateAreasSmall,
+            gridTemplateAreasLarge,
+          ]}
           overflowX={"hidden"}
-          gridTemplateColumns="1fr 1fr"
+          gridTemplateColumns={["1fr", "1fr", "1fr 1fr"]}
+          // gridTemplateColumns={["1fr", ]}
           columnGap={4}
           rowGap={4}
         >
           <GridItem area="editor">
             <CodeEditorHeader
-              inputs={inputs}
-              code={code}
+              // inputs={inputs}
+              // code={code}
               resetPlayground={resetPlayground}
               loadProgram={loadProgram}
             />

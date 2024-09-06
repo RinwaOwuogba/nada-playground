@@ -2,7 +2,7 @@ import nadaHighlightExtension from "@/lib/nada-highlight-extension";
 import CodeMirror, { EditorView, Extension } from "@uiw/react-codemirror";
 import { useMemo } from "react";
 import { python } from "@codemirror/lang-python";
-import { githubLight } from "@uiw/codemirror-theme-github";
+// import { githubLight } from "@uiw/codemirror-theme-github";
 import { lintGutter } from "@codemirror/lint";
 import nadaLinter from "@/lib/nada-linter";
 
